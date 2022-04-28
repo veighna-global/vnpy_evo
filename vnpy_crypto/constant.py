@@ -22,4 +22,4 @@ exchange_names.extend([
 ])
 
 # Generate new enum class
-Exchange = Enum("Exchange", exchange_names)
+Exchange = Enum("Exchange", zip(exchange_names, exchange_names))
