@@ -1,28 +1,38 @@
-from enum import Enum
+# The MIT License (MIT)
+#
+# Copyright (c) 2015-present, vn-crypto
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
-import vnpy.trader.constant as constant
+import importlib_metadata
+
+from .constant import Exchange
 
 
-# Extract original exchange name list
-exchange_names = [e.name for e in constant.Exchange]
+try:
+    __version__ = importlib_metadata.version("vnpy_crypto")
+except importlib_metadata.PackageNotFoundError:
+    __version__ = "dev"
 
-# Add crypto currency exchanges
-exchange_names.extend([
-    "BINANCE",
-    "BITFINEX",
-    "BITSTAMP",
-    "BYBIT",
-    "COINBASE",
-    "DERIBIT",
-    "DYDX",
-    "FTX",
-    "GATEIO",
-    "HUOBI",
-    "OKEX"
-])
 
-# Generate new enum class
-Exchange = Enum("Exchange", exchange_names)
+def init() -> None:
+    """Patch original VeighNa framework to support cryptocurrency"""
+    import vnpy.trader.constant
 
-# Patch the exchange enum in original framework
-constant.Exchange = Exchange
+    vnpy.trader.constant.Exchange = Exchange
