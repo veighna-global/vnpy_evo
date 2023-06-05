@@ -18,7 +18,7 @@ exchange_names.extend([
     "FTX",
     "GATEIO",
     "HUOBI",
-    "OKEX"
+    "OKX"
 ])
 
 # Generate new enum class

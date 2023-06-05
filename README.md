@@ -31,7 +31,7 @@
     * FTX
     * GATEIO
     * HUOBI
-    * OKEX
+    * OKX
 
 ## 安装
 
