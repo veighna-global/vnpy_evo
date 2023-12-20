@@ -8,7 +8,7 @@ from vnpy.event import EventEngine
 from vnpy.trader.setting import SETTINGS
 from vnpy.trader.engine import MainEngine
 
-from vnpy_ctp import CtpGateway
+from vnpy_binance import BinaneUsdtGateway
 from vnpy_ctastrategy import CtaStrategyApp
 from vnpy_ctastrategy.base import EVENT_CTA_LOG
 
@@ -61,7 +61,7 @@ def run_child():
 
     event_engine = EventEngine()
     main_engine = MainEngine(event_engine)
-    main_engine.add_gateway(CtpGateway)
+    main_engine.add_gateway(BinaneUsdtGateway)
     cta_engine = main_engine.add_app(CtaStrategyApp)
     main_engine.write_log("主引擎创建成功")
 
