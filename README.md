@@ -1,7 +1,7 @@
 # By Traders, For Traders.
 
 <p align="center">
-  <img src ="https://github.com/veighna-global/vnpy_crypto/blob/dev/logo.png"/>
+  <img src ="https://github.com/veighna-global/vnpy_crypto/blob/dev/logo.png" width="300" height="300"/>
 </p>
 
 <p align="center">
@@ -12,7 +12,7 @@
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_crypto.svg?color=orange"/>
 </p>
 
-VeighNa Crypto (vnpy_crypto) is a fork of the original [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform and focus completely on the crypto market. 
+VeighNa Crypto (vnpy_crypto) is a fork of [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform and focus completely on the crypto market. 
 
 ## Functional Features
 
