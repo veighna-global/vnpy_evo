@@ -10,7 +10,7 @@ from .utility import load_json
 
 
 SETTINGS: Dict[str, Any] = {
-    "font.family": "微软雅黑",
+    "font.family": "Arial",
     "font.size": 12,
 
     "log.active": True,
