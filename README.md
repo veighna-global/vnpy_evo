@@ -8,13 +8,19 @@
     <img src ="https://img.shields.io/badge/version-0.1.0-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows|linux|macos-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12-blue.svg" />
-    <img src ="https://img.shields.io/github/actions/workflow/status/veighna-global/vnpy_crypto/pythonapp.yml?branch=master"/>
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_crypto.svg?color=orange"/>
 </p>
 
 VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market. 
 
-## Functional Features
+## Social
+
+- <sub>[![Twitter](https://img.shields.io/twitter/follow/veighna.svg?style=social&label=VeighNa%20Global)](https://x.com/veighna_global)</sub>  Follow us on Twitter
+- <sub>[![Telegram Announcements](https://img.shields.io/badge/VeighNa%20Global-Channel-blue?logo=telegram)](https://t.me/veighna_channel)</sub>  Follow our important announcements
+- <sub>[![Telegram Chat](https://img.shields.io/badge/VeighNa%20Global-Chat-blue?logo=telegram)](https://t.me/+8KGF_z35nK03YWE1)</sub>  If you need technical support
+
+
+## Features
 
 1. Full-featured quantitative trading platform (vnpy_crypto.trader) 
 
@@ -100,9 +106,9 @@ VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https
 
 8. High-performance charting widget (vnpy_crypto.chart), which supports stream market data update
 
-## Installation
+## Install
 
-Download the latest version from [here](https://github.com/vnpy/vnpy/releases), unzip it and run the following command to install it.
+Download the latest version from [here](https://github.com/veighna_global/vnpy_crypto/releases), unzip it and run the following command to install it.
 
 **Windows**
 
@@ -122,7 +128,7 @@ install.bat
 bash install_osx.sh
 ```
 
-## Quick Start
+## Example
 
 You can start running VeighNa Crypto with only a few lines of code.
 
