@@ -1,0 +1,26 @@
+from enum import Enum
+
+from vnpy.trader.constant import (
+    Direction,
+    Offset,
+    Status,
+    Product,
+    OrderType,
+    OptionType,
+    Currency,
+    Interval
+)
+
+
+class Exchange(Enum):
+    """
+    Exchange.
+    """
+    # Crypto
+    BINANCE = "BINANCE"
+    OKX = "OKX"
+    BYBIT = "BYBIT"
+    DERIBIT = "DERIBIT"
+
+    # Special Function
+    LOCAL = "LOCAL"         # For local generated data
