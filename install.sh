@@ -6,7 +6,7 @@ shift 2
 
 
 [[ -z $python ]] && python=python3
-[[ -z $pypi_index ]] && pypi_index=https://pypi.douban.com/simple
+[[ -z $pypi_index ]] && pypi_index=https://pypi.vnpy.com
 
 $python -m pip install --upgrade pip wheel --index $pypi_index
 
@@ -33,11 +33,5 @@ function ta-lib-exists()
 }
 ta-lib-exists || install-ta-lib
 
-# Install Python Modules
-$python -m pip install -r requirements.txt --index $pypi_index
-
-# Install local Chinese language environment
-locale-gen zh_CN.GB18030
-
-# Install VeighNa
+# Install vnpy_crypto
 $python -m pip install . --index $pypi_index
