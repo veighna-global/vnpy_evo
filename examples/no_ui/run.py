@@ -4,9 +4,9 @@ from time import sleep
 from datetime import datetime, time
 from logging import INFO
 
-from vnpy.event import EventEngine
-from vnpy.trader.setting import SETTINGS
-from vnpy.trader.engine import MainEngine
+from vnpy_crypto.event import EventEngine
+from vnpy_crypto.trader.setting import SETTINGS
+from vnpy_crypto.trader.engine import MainEngine
 
 from vnpy_binance import BinanceUsdtGateway
 from vnpy_ctastrategy import CtaStrategyApp
