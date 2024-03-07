@@ -4,6 +4,8 @@ from functools import partial
 from importlib import import_module
 from typing import Callable, Dict, List, Tuple
 
+from qfluentwidgets import FluentWindow
+
 import vnpy
 from vnpy.event import EventEngine
 from vnpy.trader.locale import _
@@ -28,7 +30,7 @@ from ..engine import MainEngine, BaseApp
 from ..utility import get_icon_path, TRADER_DIR
 
 
-class MainWindow(QtWidgets.QMainWindow):
+class MainWindow(FluentWindow):
     """
     Main window of the trading platform.
     """
@@ -50,10 +52,13 @@ class MainWindow(QtWidgets.QMainWindow):
     def init_ui(self) -> None:
         """"""
         self.setWindowTitle(self.window_title)
-        self.init_dock()
-        self.init_toolbar()
-        self.init_menu()
-        self.load_window_setting("custom")
+
+        icon: QtGui.QIcon = QtGui.QIcon(get_icon_path(__file__, "veighna.ico"))
+        self.setWindowIcon(icon)
+        # self.init_dock()
+        # self.init_toolbar()
+        # self.init_menu()
+        # self.load_window_setting("custom")
 
     def init_dock(self) -> None:
         """"""
@@ -99,7 +104,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         gateway_names: list = self.main_engine.get_all_gateway_names()
         for name in gateway_names:
-            func: Callable = partial(self.connect, name)
+            func: Callable = partial(self.connect_gateway, name)
             self.add_action(
                 sys_menu,
                 _("连接{}").format(name),
@@ -230,7 +235,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.addDockWidget(area, dock)
         return widget, dock
 
-    def connect(self, gateway_name: str) -> None:
+    def connect_gateway(self, gateway_name: str) -> None:
         """
         Open connect dialog for gateway connection.
         """
@@ -255,8 +260,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
             for monitor in self.monitors.values():
                 monitor.save_setting()
-
-            self.save_window_setting("custom")
 
             self.main_engine.close()
 
