@@ -119,7 +119,7 @@ install.bat
 **Ubuntu**
 
 ```
-. install.sh
+bash install.sh
 ```
 
 **Macos**
