@@ -4,7 +4,13 @@ from functools import partial
 from importlib import import_module
 from typing import Callable, Dict, List, Tuple
 
-from qfluentwidgets import FluentWindow
+from qfluentwidgets import (
+    FluentWindow,
+    FluentIcon as FIF,
+    Pivot,
+    
+)
+
 
 import vnpy
 from vnpy.event import EventEngine
@@ -55,44 +61,55 @@ class MainWindow(FluentWindow):
 
         icon: QtGui.QIcon = QtGui.QIcon(get_icon_path(__file__, "veighna.ico"))
         self.setWindowIcon(icon)
-        # self.init_dock()
+
+        self.init_home()
+        self.init_navigation()
         # self.init_toolbar()
         # self.init_menu()
         # self.load_window_setting("custom")
 
-    def init_dock(self) -> None:
+    def init_navigation(self) -> None:
         """"""
-        self.trading_widget, trading_dock = self.create_dock(
-            TradingWidget, _("交易"), QtCore.Qt.LeftDockWidgetArea
-        )
-        tick_widget, tick_dock = self.create_dock(
-            TickMonitor, _("行情"), QtCore.Qt.RightDockWidgetArea
-        )
-        order_widget, order_dock = self.create_dock(
-            OrderMonitor, _("委托"), QtCore.Qt.RightDockWidgetArea
-        )
-        active_widget, active_dock = self.create_dock(
-            ActiveOrderMonitor, _("活动"), QtCore.Qt.RightDockWidgetArea
-        )
-        trade_widget, trade_dock = self.create_dock(
-            TradeMonitor, _("成交"), QtCore.Qt.RightDockWidgetArea
-        )
-        log_widget, log_dock = self.create_dock(
-            LogMonitor, _("日志"), QtCore.Qt.BottomDockWidgetArea
-        )
-        account_widget, account_dock = self.create_dock(
-            AccountMonitor, _("资金"), QtCore.Qt.BottomDockWidgetArea
-        )
-        position_widget, position_dock = self.create_dock(
-            PositionMonitor, _("持仓"), QtCore.Qt.BottomDockWidgetArea
-        )
+        self.addSubInterface(self.home_widget, FIF.HOME, "Home")
 
-        self.tabifyDockWidget(active_dock, order_dock)
+    def init_home(self) -> None:
+        """"""
+        self.trading_widget = TradingWidget(self.main_engine, self.event_engine)
+        self.tick_monitor = TickMonitor(self.main_engine, self.event_engine)
+        self.order_monitor = OrderMonitor(self.main_engine, self.event_engine)
+        self.active_monitor = ActiveOrderMonitor(self.main_engine, self.event_engine)
+        self.trade_monitor = TradeMonitor(self.main_engine, self.event_engine)
+        self.position_monitor = PositionMonitor(self.main_engine, self.event_engine)
+        self.account_monitor = AccountMonitor(self.main_engine, self.event_engine)
+        self.log_monitor = LogMonitor(self.main_engine, self.event_engine)
 
-        self.save_window_setting("default")
+        mid_pivot = PivotWidgdet(self)
+        mid_pivot.add_widget(self.active_monitor, "Active")
+        mid_pivot.add_widget(self.order_monitor, "Order")
 
-        tick_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
-        position_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        bottom_pivot = PivotWidgdet(self)
+        bottom_pivot.add_widget(self.log_monitor, "Log")
+        bottom_pivot.add_widget(self.trade_monitor, "Trade")
+        bottom_pivot.add_widget(self.position_monitor, "Position")
+        bottom_pivot.add_widget(self.account_monitor, "Account")
+
+        vbox = QtWidgets.QVBoxLayout()
+        vbox.addWidget(self.tick_monitor)
+        vbox.addWidget(mid_pivot)
+        vbox.addWidget(bottom_pivot)
+
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.addWidget(self.trading_widget)
+        hbox.addLayout(vbox)
+
+        widget = QtWidgets.QWidget()
+        widget.setLayout(hbox)
+        widget.setObjectName("home")
+
+        self.home_widget = widget
+
+        self.tick_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        self.position_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
 
     def init_menu(self) -> None:
         """"""
@@ -324,3 +341,30 @@ class MainWindow(FluentWindow):
         """
         dialog: GlobalDialog = GlobalDialog()
         dialog.exec()
+
+
+class PivotWidgdet(QtWidgets.QWidget):
+    """"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+        self.pivot = Pivot(self)
+        self.stacked_widget = QtWidgets.QStackedWidget(self)
+        self.vbox = QtWidgets.QVBoxLayout(self)
+
+        self.vbox.addWidget(self.pivot, 0, QtCore.Qt.AlignLeft)
+        self.vbox.addWidget(self.stacked_widget)
+        self.vbox.setContentsMargins(0, 0, 0, 0)
+
+    def add_widget(self, widget: QtWidgets.QWidget, name: str) -> None:
+        """"""
+        widget.setObjectName(name)
+    
+        self.stacked_widget.addWidget(widget)
+    
+        self.pivot.addItem(
+            routeKey=name,
+            text=name,
+            onClick=lambda: self.stacked_widget.setCurrentWidget(widget)
+        )
