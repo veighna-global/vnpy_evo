@@ -6,8 +6,8 @@ import webbrowser
 import types
 import threading
 
-import qdarkstyle
 from PySide6 import QtGui, QtWidgets, QtCore
+from qfluentwidgets import setTheme, Theme
 
 from vnpy.trader.locale import _
 from ..setting import SETTINGS

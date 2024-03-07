@@ -11,6 +11,7 @@ from copy import copy
 from tzlocal import get_localzone_name
 
 import importlib_metadata
+from qfluentwidgets import TableWidget
 
 from vnpy.trader.locale import _
 from .qt import QtCore, QtGui, QtWidgets
@@ -41,8 +42,8 @@ from ..setting import SETTING_FILENAME, SETTINGS
 
 COLOR_LONG = QtGui.QColor("red")
 COLOR_SHORT = QtGui.QColor("green")
-COLOR_BID = QtGui.QColor(255, 174, 201)
-COLOR_ASK = QtGui.QColor(160, 255, 160)
+COLOR_BID = QtGui.QColor("red")
+COLOR_ASK = QtGui.QColor("green")
 COLOR_BLACK = QtGui.QColor("black")
 
 
@@ -213,7 +214,7 @@ class MsgCell(BaseCell):
         self.setTextAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 
 
-class BaseMonitor(QtWidgets.QTableWidget):
+class BaseMonitor(TableWidget):
     """
     Monitor data update.
     """
@@ -761,8 +762,8 @@ class TradingWidget(QtWidgets.QWidget):
         grid.addWidget(cancel_button, 10, 0, 1, 3)
 
         # Market depth display area
-        bid_color: str = "rgb(255,174,201)"
-        ask_color: str = "rgb(160,255,160)"
+        bid_color: str = "red"
+        ask_color: str = "green"
 
         self.bp1_label: QtWidgets.QLabel = self.create_label(bid_color)
         self.bp2_label: QtWidgets.QLabel = self.create_label(bid_color)
