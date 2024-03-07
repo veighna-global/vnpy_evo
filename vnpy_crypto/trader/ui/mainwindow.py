@@ -108,8 +108,8 @@ class MainWindow(FluentWindow):
 
         self.home_widget = widget
 
-        self.tick_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
-        self.position_widget.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        self.tick_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        self.position_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
 
     def init_menu(self) -> None:
         """"""
@@ -357,6 +357,8 @@ class PivotWidgdet(QtWidgets.QWidget):
         self.vbox.addWidget(self.stacked_widget)
         self.vbox.setContentsMargins(0, 0, 0, 0)
 
+        self.stacked_widget.currentChanged.connect(self.onCurrentIndexChanged)
+
     def add_widget(self, widget: QtWidgets.QWidget, name: str) -> None:
         """"""
         widget.setObjectName(name)
@@ -368,3 +370,12 @@ class PivotWidgdet(QtWidgets.QWidget):
             text=name,
             onClick=lambda: self.stacked_widget.setCurrentWidget(widget)
         )
+
+        if self.stacked_widget.count() == 1:
+            self.stacked_widget.setCurrentWidget(widget)
+            self.pivot.setCurrentItem(widget.objectName())
+
+    def onCurrentIndexChanged(self, index: int) -> None:
+        """"""
+        widget: QtWidgets.QWidget = self.stacked_widget.widget(index)
+        self.pivot.setCurrentItem(widget.objectName())
