@@ -8,7 +8,9 @@ from qfluentwidgets import (
     FluentWindow,
     FluentIcon as FIF,
     Pivot,
-    
+    PushButton,
+    RoundMenu,
+    Action
 )
 
 
@@ -222,13 +224,6 @@ class MainWindow(FluentWindow):
         self.addDockWidget(area, dock)
         return widget, dock
 
-    def connect_gateway(self, gateway_name: str) -> None:
-        """
-        Open connect dialog for gateway connection.
-        """
-        dialog: ConnectDialog = ConnectDialog(self.main_engine, gateway_name)
-        dialog.exec()
-
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         """
         Call main engine close function before exit.
@@ -358,15 +353,28 @@ class HomeWidget(QtWidgets.QWidget):
         """"""
         super().__init__()
 
+        self.main_engine: MainEngine = main_engine
+        self.event_engine: EventEngine = event_engine
+
+        self.init_ui()
+        self.init_menu()
+
+    def init_ui(self) -> None:
+        """"""
         # Create widgets
-        self.trading_widget = TradingWidget(main_engine, event_engine)
-        self.tick_monitor = TickMonitor(main_engine, event_engine)
-        self.order_monitor = OrderMonitor(main_engine, event_engine)
-        self.active_monitor = ActiveOrderMonitor(main_engine, event_engine)
-        self.trade_monitor = TradeMonitor(main_engine, event_engine)
-        self.position_monitor = PositionMonitor(main_engine, event_engine)
-        self.account_monitor = AccountMonitor(main_engine, event_engine)
-        self.log_monitor = LogMonitor(main_engine, event_engine)
+        self.trading_widget = TradingWidget(self.main_engine, self.event_engine)
+        self.tick_monitor = TickMonitor(self.main_engine, self.event_engine)
+        self.order_monitor = OrderMonitor(self.main_engine, self.event_engine)
+        self.active_monitor = ActiveOrderMonitor(self.main_engine, self.event_engine)
+        self.trade_monitor = TradeMonitor(self.main_engine, self.event_engine)
+        self.position_monitor = PositionMonitor(self.main_engine, self.event_engine)
+        self.account_monitor = AccountMonitor(self.main_engine, self.event_engine)
+        self.log_monitor = LogMonitor(self.main_engine, self.event_engine)
+
+        self.menu: RoundMenu  = RoundMenu(parent=self)
+
+        self.menu_button: PushButton = PushButton("System")
+        self.menu_button.clicked.connect(self.show_menu)
 
         # Set layout
         mid_pivot = PivotWidgdet(self)
@@ -379,17 +387,44 @@ class HomeWidget(QtWidgets.QWidget):
         bottom_pivot.add_widget(self.position_monitor, "Position")
         bottom_pivot.add_widget(self.account_monitor, "Account")
 
-        vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(self.tick_monitor)
-        vbox.addWidget(mid_pivot)
-        vbox.addWidget(bottom_pivot)
+        vbox1 = QtWidgets.QVBoxLayout()
+        vbox1.addWidget(self.tick_monitor)
+        vbox1.addWidget(mid_pivot)
+        vbox1.addWidget(bottom_pivot)
+
+        vbox2 = QtWidgets.QVBoxLayout()
+        vbox2.addWidget(self.trading_widget)
+        vbox2.addWidget(self.menu_button)
 
         hbox = QtWidgets.QHBoxLayout()
-        hbox.addWidget(self.trading_widget)
-        hbox.addLayout(vbox)
+        hbox.addLayout(vbox2)
+        hbox.addLayout(vbox1)
 
         self.setLayout(hbox)
 
         # Connect signal
         self.tick_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
         self.position_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+
+    def init_menu(self) -> None:
+        """"""
+        gateway_names: list = self.main_engine.get_all_gateway_names()
+        for name in gateway_names:
+            func: Callable = partial(self.connect_gateway, name)
+
+            action = Action(f"Connect {name}")
+            action.triggered.connect(func)
+
+            self.menu.addAction(action)
+
+    def show_menu(self) -> None:
+        """"""
+        pos = self.menu_button.mapToGlobal(QtCore.QPoint(self.menu_button.width() + 5, -100))
+        self.menu.exec(pos, ani=True)
+
+    def connect_gateway(self, gateway_name: str) -> None:
+        """
+        Open connect dialog for gateway connection.
+        """
+        dialog: ConnectDialog = ConnectDialog(self.main_engine, gateway_name)
+        dialog.exec()
