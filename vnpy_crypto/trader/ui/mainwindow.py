@@ -2,7 +2,7 @@ from types import ModuleType
 import webbrowser
 from functools import partial
 from importlib import import_module
-from typing import Callable
+from typing import Callable, Type
 
 from qfluentwidgets import (
     FluentWindow, MessageBox,
@@ -24,7 +24,6 @@ from .widget import (
     PivotWidgdet
 )
 from .monitor import (
-    BaseMonitor,
     TickMonitor,
     OrderMonitor,
     TradeMonitor,
@@ -52,8 +51,7 @@ class MainWindow(FluentWindow):
 
         self.window_title: str = _("VeighNa Trader 社区版 - {}   [{}]").format(vnpy.__version__, TRADER_DIR)
 
-        self.widgets: dict[str, QtWidgets.QWidget] = {}
-        self.monitors: dict[str, BaseMonitor] = {}
+        self.app_widgets: dict[str, QtWidgets.QWidget] = {}
 
         self.init_ui()
 
@@ -75,10 +73,21 @@ class MainWindow(FluentWindow):
         self.contract_manager = ContractManager(self.main_engine, self.event_engine)
         self.contract_manager.setObjectName("contract")
 
+        all_apps: list[BaseApp] = self.main_engine.get_all_apps()
+        for app in all_apps:
+            ui_module: ModuleType = import_module(app.app_module + ".ui")
+            widget_class: Type = getattr(ui_module, app.widget_name)
+            widget: QtWidgets.QWidget = widget_class(self.main_engine, self.event_engine)
+            widget.setObjectName(app.display_name)
+            self.app_widgets[app.display_name] = widget
+
     def init_navigation(self) -> None:
         """"""
         self.addSubInterface(self.home_widget, FIF.HOME, "Home")
         self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find contract")
+
+        for name, widget in self.app_widgets.items():
+            self.addSubInterface(widget, FIF.APPLICATION, name)
 
         self.navigationInterface.addItem(
             routeKey="froum",
@@ -219,12 +228,6 @@ class MainWindow(FluentWindow):
         reply: int = msgbox.exec()
 
         if reply:
-            for widget in self.widgets.values():
-                widget.close()
-
-            for monitor in self.monitors.values():
-                monitor.save_setting()
-
             self.main_engine.close()
 
             event.accept()
