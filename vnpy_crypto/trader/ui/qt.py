@@ -7,7 +7,11 @@ import types
 import threading
 
 from PySide6 import QtGui, QtWidgets, QtCore
-from qfluentwidgets import setTheme, Theme
+from qfluentwidgets import (
+    setTheme, Theme,
+    PushButton, TextEdit, SubtitleLabel
+)
+from qframelesswindow import FramelessWindow
 
 from vnpy.trader.locale import _
 from ..setting import SETTINGS
@@ -82,19 +86,21 @@ class ExceptionWidget(QtWidgets.QWidget):
 
     def init_ui(self) -> None:
         """"""
-        self.setWindowTitle(_("触发异常"))
         self.setFixedSize(600, 600)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        self.msg_edit: QtWidgets.QTextEdit = QtWidgets.QTextEdit()
+        self.title_label = SubtitleLabel("Exception Triggered", self)
+
+        self.msg_edit: TextEdit = TextEdit()
         self.msg_edit.setReadOnly(True)
 
-        copy_button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("复制"))
+        copy_button: PushButton = PushButton("Copy")
         copy_button.clicked.connect(self._copy_text)
 
-        community_button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("求助"))
+        community_button: PushButton = PushButton("Help")
         community_button.clicked.connect(self._open_community)
 
-        close_button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("关闭"))
+        close_button: PushButton = PushButton("Close")
         close_button.clicked.connect(self.close)
 
         hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()
@@ -103,6 +109,7 @@ class ExceptionWidget(QtWidgets.QWidget):
         hbox.addWidget(close_button)
 
         vbox: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()
+        vbox.addWidget(self.title_label)
         vbox.addWidget(self.msg_edit)
         vbox.addLayout(hbox)
 

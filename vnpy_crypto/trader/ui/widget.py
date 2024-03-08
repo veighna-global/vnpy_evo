@@ -1221,7 +1221,7 @@ class GlobalDialog(MessageBoxBase):
 
     def init_ui(self) -> None:
         """"""
-        self.title_label = SubtitleLabel(f"Global Configuration", self)
+        self.title_label = SubtitleLabel("Global Configuration", self)
 
         settings: dict = copy(SETTINGS)
         settings.update(load_json(SETTING_FILENAME))
