@@ -10,7 +10,8 @@ from qfluentwidgets import (
     Pivot,
     PushButton,
     RoundMenu,
-    Action
+    Action,
+    MessageBox
 )
 
 
@@ -228,15 +229,10 @@ class MainWindow(FluentWindow):
         """
         Call main engine close function before exit.
         """
-        reply = QtWidgets.QMessageBox.question(
-            self,
-            _("退出"),
-            _("确认退出？"),
-            QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No,
-            QtWidgets.QMessageBox.No,
-        )
+        msgbox: MessageBox = MessageBox("Notice", "Do you confirm exit?", self.window())
+        reply: int = msgbox.exec()
 
-        if reply == QtWidgets.QMessageBox.Yes:
+        if reply:
             for widget in self.widgets.values():
                 widget.close()
 

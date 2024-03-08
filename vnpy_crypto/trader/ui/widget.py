@@ -1113,7 +1113,7 @@ class ContractManager(QtWidgets.QWidget):
             label: str = f"{display}\n{name}"
             labels.append(label)
 
-        self.contract_table: QtWidgets.QTableWidget = QtWidgets.QTableWidget()
+        self.contract_table: TableWidget = TableWidget()
         self.contract_table.setColumnCount(len(self.headers))
         self.contract_table.setHorizontalHeaderLabels(labels)
         self.contract_table.verticalHeader().setVisible(False)
