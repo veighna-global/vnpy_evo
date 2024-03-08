@@ -5,16 +5,11 @@ from importlib import import_module
 from typing import Callable
 
 from qfluentwidgets import (
-    FluentWindow,
+    FluentWindow, MessageBox,
     FluentIcon as FIF,
-    Pivot,
-    PushButton,
-    RoundMenu,
-    Action,
-    MessageBox,
-    NavigationItemPosition,
+    PushButton, RoundMenu,
+    Action, NavigationItemPosition,
 )
-
 
 import vnpy
 from vnpy.event import EventEngine
@@ -22,6 +17,13 @@ from vnpy.trader.locale import _
 
 from .qt import QtCore, QtGui, QtWidgets
 from .widget import (
+    ConnectDialog,
+    TradingWidget,
+    AboutDialog,
+    GlobalDialog,
+    PivotWidgdet
+)
+from .monitor import (
     BaseMonitor,
     TickMonitor,
     OrderMonitor,
@@ -30,11 +32,7 @@ from .widget import (
     AccountMonitor,
     LogMonitor,
     ActiveOrderMonitor,
-    ConnectDialog,
-    ContractManager,
-    TradingWidget,
-    AboutDialog,
-    GlobalDialog,
+    ContractManager
 )
 from ..engine import MainEngine, BaseApp
 from ..utility import get_icon_path, TRADER_DIR
@@ -279,44 +277,6 @@ class MainWindow(FluentWindow):
         """
         dialog: AboutDialog = AboutDialog(self)
         dialog.exec()
-
-
-class PivotWidgdet(QtWidgets.QWidget):
-    """"""
-
-    def __init__(self, parent=None):
-        super().__init__(parent=parent)
-
-        self.pivot = Pivot(self)
-        self.stacked_widget = QtWidgets.QStackedWidget(self)
-        self.vbox = QtWidgets.QVBoxLayout(self)
-
-        self.vbox.addWidget(self.pivot, 0, QtCore.Qt.AlignLeft)
-        self.vbox.addWidget(self.stacked_widget)
-        self.vbox.setContentsMargins(0, 0, 0, 0)
-
-        self.stacked_widget.currentChanged.connect(self.onCurrentIndexChanged)
-
-    def add_widget(self, widget: QtWidgets.QWidget, name: str) -> None:
-        """"""
-        widget.setObjectName(name)
-
-        self.stacked_widget.addWidget(widget)
-
-        self.pivot.addItem(
-            routeKey=name,
-            text=name,
-            onClick=lambda: self.stacked_widget.setCurrentWidget(widget)
-        )
-
-        if self.stacked_widget.count() == 1:
-            self.stacked_widget.setCurrentWidget(widget)
-            self.pivot.setCurrentItem(widget.objectName())
-
-    def onCurrentIndexChanged(self, index: int) -> None:
-        """"""
-        widget: QtWidgets.QWidget = self.stacked_widget.widget(index)
-        self.pivot.setCurrentItem(widget.objectName())
 
 
 class HomeWidget(QtWidgets.QWidget):
