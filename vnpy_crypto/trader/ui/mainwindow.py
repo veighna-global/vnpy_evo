@@ -62,54 +62,24 @@ class MainWindow(FluentWindow):
         icon: QtGui.QIcon = QtGui.QIcon(get_icon_path(__file__, "veighna.ico"))
         self.setWindowIcon(icon)
 
-        self.init_home()
+        self.init_widgets()
         self.init_navigation()
         # self.init_toolbar()
         # self.init_menu()
         # self.load_window_setting("custom")
 
+    def init_widgets(self) -> None:
+        """"""
+        self.home_widget = HomeWidget(self.main_engine, self.event_engine)
+        self.home_widget.setObjectName("home")
+
+        self.contract_manager = ContractManager(self.main_engine, self.event_engine)
+        self.contract_manager.setObjectName("contract")
+
     def init_navigation(self) -> None:
         """"""
         self.addSubInterface(self.home_widget, FIF.HOME, "Home")
-
-    def init_home(self) -> None:
-        """"""
-        self.trading_widget = TradingWidget(self.main_engine, self.event_engine)
-        self.tick_monitor = TickMonitor(self.main_engine, self.event_engine)
-        self.order_monitor = OrderMonitor(self.main_engine, self.event_engine)
-        self.active_monitor = ActiveOrderMonitor(self.main_engine, self.event_engine)
-        self.trade_monitor = TradeMonitor(self.main_engine, self.event_engine)
-        self.position_monitor = PositionMonitor(self.main_engine, self.event_engine)
-        self.account_monitor = AccountMonitor(self.main_engine, self.event_engine)
-        self.log_monitor = LogMonitor(self.main_engine, self.event_engine)
-
-        mid_pivot = PivotWidgdet(self)
-        mid_pivot.add_widget(self.active_monitor, "Active")
-        mid_pivot.add_widget(self.order_monitor, "Order")
-
-        bottom_pivot = PivotWidgdet(self)
-        bottom_pivot.add_widget(self.log_monitor, "Log")
-        bottom_pivot.add_widget(self.trade_monitor, "Trade")
-        bottom_pivot.add_widget(self.position_monitor, "Position")
-        bottom_pivot.add_widget(self.account_monitor, "Account")
-
-        vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(self.tick_monitor)
-        vbox.addWidget(mid_pivot)
-        vbox.addWidget(bottom_pivot)
-
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.addWidget(self.trading_widget)
-        hbox.addLayout(vbox)
-
-        widget = QtWidgets.QWidget()
-        widget.setLayout(hbox)
-        widget.setObjectName("home")
-
-        self.home_widget = widget
-
-        self.tick_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
-        self.position_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find Contract")
 
     def init_menu(self) -> None:
         """"""
@@ -379,3 +349,47 @@ class PivotWidgdet(QtWidgets.QWidget):
         """"""
         widget: QtWidgets.QWidget = self.stacked_widget.widget(index)
         self.pivot.setCurrentItem(widget.objectName())
+
+
+class HomeWidget(QtWidgets.QWidget):
+    """"""
+
+    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
+        """"""
+        super().__init__()
+
+        # Create widgets
+        self.trading_widget = TradingWidget(main_engine, event_engine)
+        self.tick_monitor = TickMonitor(main_engine, event_engine)
+        self.order_monitor = OrderMonitor(main_engine, event_engine)
+        self.active_monitor = ActiveOrderMonitor(main_engine, event_engine)
+        self.trade_monitor = TradeMonitor(main_engine, event_engine)
+        self.position_monitor = PositionMonitor(main_engine, event_engine)
+        self.account_monitor = AccountMonitor(main_engine, event_engine)
+        self.log_monitor = LogMonitor(main_engine, event_engine)
+
+        # Set layout
+        mid_pivot = PivotWidgdet(self)
+        mid_pivot.add_widget(self.active_monitor, "Active")
+        mid_pivot.add_widget(self.order_monitor, "Order")
+
+        bottom_pivot = PivotWidgdet(self)
+        bottom_pivot.add_widget(self.log_monitor, "Log")
+        bottom_pivot.add_widget(self.trade_monitor, "Trade")
+        bottom_pivot.add_widget(self.position_monitor, "Position")
+        bottom_pivot.add_widget(self.account_monitor, "Account")
+
+        vbox = QtWidgets.QVBoxLayout()
+        vbox.addWidget(self.tick_monitor)
+        vbox.addWidget(mid_pivot)
+        vbox.addWidget(bottom_pivot)
+
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.addWidget(self.trading_widget)
+        hbox.addLayout(vbox)
+
+        self.setLayout(hbox)
+
+        # Connect signal
+        self.tick_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
+        self.position_monitor.itemDoubleClicked.connect(self.trading_widget.update_with_cell)
