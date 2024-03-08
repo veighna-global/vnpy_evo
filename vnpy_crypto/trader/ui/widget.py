@@ -12,13 +12,9 @@ from tzlocal import get_localzone_name
 
 import importlib_metadata
 from qfluentwidgets import (
-    TableWidget,
-    PushButton,
-    ComboBox,
-    LineEdit,
-    CheckBox,
+    TableWidget, MessageBoxBase,
+    PushButton, ComboBox, LineEdit, CheckBox,
     BodyLabel, SubtitleLabel,
-    MessageBoxBase
 )
 
 from vnpy.trader.locale import _
@@ -1210,14 +1206,14 @@ class AboutDialog(MessageBoxBase):
         self.cancelButton.hide()
 
 
-class GlobalDialog(QtWidgets.QDialog):
+class GlobalDialog(MessageBoxBase):
     """
-    Start connection of a certain gateway.
+    Edit global setting.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, parent: QtWidgets.QWidget = None) -> None:
         """"""
-        super().__init__()
+        super().__init__(parent)
 
         self.widgets: Dict[str, Any] = {}
 
@@ -1225,36 +1221,40 @@ class GlobalDialog(QtWidgets.QDialog):
 
     def init_ui(self) -> None:
         """"""
-        self.setWindowTitle(_("全局配置"))
-        self.setMinimumWidth(800)
+        self.title_label = SubtitleLabel(f"Global Configuration", self)
 
         settings: dict = copy(SETTINGS)
         settings.update(load_json(SETTING_FILENAME))
 
         # Initialize line edits and form layout based on setting.
-        form: QtWidgets.QFormLayout = QtWidgets.QFormLayout()
+        scroll_widget: QtWidgets.QWidget = QtWidgets.QWidget(parent=self)
+
+        grid: QtWidgets.QFormLayout = QtWidgets.QGridLayout(parent=scroll_widget)
+        row: int = 0
 
         for field_name, field_value in settings.items():
-            field_type: type = type(field_value)
-            widget: LineEdit = LineEdit(str(field_value))
+            if "datafeed" in field_name:
+                continue
 
-            form.addRow(f"{field_name} <{field_type.__name__}>", widget)
+            field_type: type = type(field_value)
+            widget: LineEdit = LineEdit()
+            widget.setText(str(field_value))
+
+            grid.addWidget(BodyLabel(f"{field_name} <{field_type.__name__}>"), row, 0)
+            grid.addWidget(widget, row, 1)
             self.widgets[field_name] = (widget, field_type)
 
-        button: PushButton = PushButton(_("确定"))
-        button.clicked.connect(self.update_setting)
-        form.addRow(button)
+            row += 1
 
-        scroll_widget: QtWidgets.QWidget = QtWidgets.QWidget()
-        scroll_widget.setLayout(form)
+        scroll_widget.setLayout(grid)
 
-        scroll_area: QtWidgets.QScrollArea = QtWidgets.QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(scroll_widget)
+        self.viewLayout.addWidget(self.title_label)
+        self.viewLayout.addWidget(scroll_widget)
 
-        vbox: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()
-        vbox.addWidget(scroll_area)
-        self.setLayout(vbox)
+        self.yesButton.setText("Confirm")
+        self.yesButton.clicked.connect(self.update_setting)
+
+        self.widget.setFixedWidth(self.widget.width() * 6)
 
     def update_setting(self) -> None:
         """

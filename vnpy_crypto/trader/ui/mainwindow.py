@@ -12,7 +12,7 @@ from qfluentwidgets import (
     RoundMenu,
     Action,
     MessageBox,
-    NavigationItemPosition
+    NavigationItemPosition,
 )
 
 
@@ -34,7 +34,7 @@ from .widget import (
     ContractManager,
     TradingWidget,
     AboutDialog,
-    GlobalDialog
+    GlobalDialog,
 )
 from ..engine import MainEngine, BaseApp
 from ..utility import get_icon_path, TRADER_DIR
@@ -88,7 +88,7 @@ class MainWindow(FluentWindow):
             text="Test email",
             onClick=self.send_test_email,
             selectable=False,
-            position=NavigationItemPosition.BOTTOM
+            position=NavigationItemPosition.TOP
         )
 
         self.navigationInterface.addItem(
@@ -96,6 +96,15 @@ class MainWindow(FluentWindow):
             icon=FIF.HELP,
             text="Community forum",
             onClick=self.open_forum,
+            selectable=False,
+            position=NavigationItemPosition.TOP
+        )
+
+        self.navigationInterface.addItem(
+            routeKey="setting",
+            icon=FIF.SETTING,
+            text="Settings",
+            onClick=self.edit_global_setting,
             selectable=False,
             position=NavigationItemPosition.BOTTOM
         )
@@ -261,7 +270,7 @@ class MainWindow(FluentWindow):
     def edit_global_setting(self) -> None:
         """
         """
-        dialog: GlobalDialog = GlobalDialog()
+        dialog: GlobalDialog = GlobalDialog(self)
         dialog.exec()
 
     def open_about(self) -> None:
