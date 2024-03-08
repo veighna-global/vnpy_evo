@@ -17,7 +17,8 @@ from qfluentwidgets import (
     ComboBox,
     LineEdit,
     CheckBox,
-    BodyLabel as MyLabel
+    BodyLabel, SubtitleLabel,
+    MessageBoxBase
 )
 
 from vnpy.trader.locale import _
@@ -591,14 +592,14 @@ class QuoteMonitor(BaseMonitor):
         self.main_engine.cancel_quote(req, quote.gateway_name)
 
 
-class ConnectDialog(QtWidgets.QDialog):
+class ConnectDialog(MessageBoxBase):
     """
     Start connection of a certain gateway.
     """
 
-    def __init__(self, main_engine: MainEngine, gateway_name: str) -> None:
+    def __init__(self, main_engine: MainEngine, gateway_name: str, parent: QtWidgets.QWidget = None) -> None:
         """"""
-        super().__init__()
+        super().__init__(parent)
 
         self.main_engine: MainEngine = main_engine
         self.gateway_name: str = gateway_name
@@ -610,7 +611,7 @@ class ConnectDialog(QtWidgets.QDialog):
 
     def init_ui(self) -> None:
         """"""
-        self.setWindowTitle(_("连接{}").format(self.gateway_name))
+        self.title_label = SubtitleLabel(f"Connect {self.gateway_name}", self)
 
         # Default setting provides field name, field data type and field default value.
         default_setting: dict = self.main_engine.get_default_setting(
@@ -649,19 +650,23 @@ class ConnectDialog(QtWidgets.QDialog):
                     validator: QtGui.QIntValidator = QtGui.QIntValidator()
                     widget.setValidator(validator)
 
-            grid.addWidget(MyLabel(f"{field_name} <{field_type.__name__}>"), row, 0)
+            grid.addWidget(BodyLabel(f"{field_name} <{field_type.__name__}>"), row, 0)
             grid.addWidget(widget, row, 1)
             self.widgets[field_name] = (widget, field_type)
 
             row += 1
 
-        button: PushButton = PushButton(_("连接"))
-        button.clicked.connect(self.connect)
-        grid.addWidget(button, row, 0, 1, 2)
+        self.viewLayout.addWidget(self.title_label)
+        self.viewLayout.addLayout(grid)
 
-        self.setLayout(grid)
+        self.yesButton.setText("Connect")
+        self.yesButton.clicked.connect(self.connect_gateway)
 
-    def connect(self) -> None:
+        self.cancelButton.setText("Cancel")
+
+        self.widget.setFixedWidth(self.widget.width() * 6)
+
+    def connect_gateway(self) -> None:
         """
         Get setting value from line edits and connect the gateway.
         """
@@ -749,15 +754,15 @@ class TradingWidget(QtWidgets.QWidget):
         cancel_button.clicked.connect(self.cancel_all)
 
         grid: QtWidgets.QGridLayout = QtWidgets.QGridLayout()
-        grid.addWidget(MyLabel(_("交易所")), 0, 0)
-        grid.addWidget(MyLabel(_("代码")), 1, 0)
-        grid.addWidget(MyLabel(_("名称")), 2, 0)
-        grid.addWidget(MyLabel(_("方向")), 3, 0)
-        grid.addWidget(MyLabel(_("开平")), 4, 0)
-        grid.addWidget(MyLabel(_("类型")), 5, 0)
-        grid.addWidget(MyLabel(_("价格")), 6, 0)
-        grid.addWidget(MyLabel(_("数量")), 7, 0)
-        grid.addWidget(MyLabel(_("接口")), 8, 0)
+        grid.addWidget(BodyLabel(_("交易所")), 0, 0)
+        grid.addWidget(BodyLabel(_("代码")), 1, 0)
+        grid.addWidget(BodyLabel(_("名称")), 2, 0)
+        grid.addWidget(BodyLabel(_("方向")), 3, 0)
+        grid.addWidget(BodyLabel(_("开平")), 4, 0)
+        grid.addWidget(BodyLabel(_("类型")), 5, 0)
+        grid.addWidget(BodyLabel(_("价格")), 6, 0)
+        grid.addWidget(BodyLabel(_("数量")), 7, 0)
+        grid.addWidget(BodyLabel(_("接口")), 8, 0)
         grid.addWidget(self.exchange_combo, 0, 1, 1, 2)
         grid.addWidget(self.symbol_line, 1, 1, 1, 2)
         grid.addWidget(self.name_line, 2, 1, 1, 2)
@@ -775,42 +780,42 @@ class TradingWidget(QtWidgets.QWidget):
         bid_color: str = "red"
         ask_color: str = "green"
 
-        self.bp1_label: MyLabel = self.create_label(bid_color)
-        self.bp2_label: MyLabel = self.create_label(bid_color)
-        self.bp3_label: MyLabel = self.create_label(bid_color)
-        self.bp4_label: MyLabel = self.create_label(bid_color)
-        self.bp5_label: MyLabel = self.create_label(bid_color)
+        self.bp1_label: BodyLabel = self.create_label(bid_color)
+        self.bp2_label: BodyLabel = self.create_label(bid_color)
+        self.bp3_label: BodyLabel = self.create_label(bid_color)
+        self.bp4_label: BodyLabel = self.create_label(bid_color)
+        self.bp5_label: BodyLabel = self.create_label(bid_color)
 
-        self.bv1_label: MyLabel = self.create_label(
+        self.bv1_label: BodyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv2_label: MyLabel = self.create_label(
+        self.bv2_label: BodyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv3_label: MyLabel = self.create_label(
+        self.bv3_label: BodyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv4_label: MyLabel = self.create_label(
+        self.bv4_label: BodyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv5_label: MyLabel = self.create_label(
+        self.bv5_label: BodyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
 
-        self.ap1_label: MyLabel = self.create_label(ask_color)
-        self.ap2_label: MyLabel = self.create_label(ask_color)
-        self.ap3_label: MyLabel = self.create_label(ask_color)
-        self.ap4_label: MyLabel = self.create_label(ask_color)
-        self.ap5_label: MyLabel = self.create_label(ask_color)
+        self.ap1_label: BodyLabel = self.create_label(ask_color)
+        self.ap2_label: BodyLabel = self.create_label(ask_color)
+        self.ap3_label: BodyLabel = self.create_label(ask_color)
+        self.ap4_label: BodyLabel = self.create_label(ask_color)
+        self.ap5_label: BodyLabel = self.create_label(ask_color)
 
-        self.av1_label: MyLabel = self.create_label(
+        self.av1_label: BodyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av2_label: MyLabel = self.create_label(
+        self.av2_label: BodyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av3_label: MyLabel = self.create_label(
+        self.av3_label: BodyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av4_label: MyLabel = self.create_label(
+        self.av4_label: BodyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av5_label: MyLabel = self.create_label(
+        self.av5_label: BodyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
 
-        self.lp_label: MyLabel = self.create_label()
-        self.return_label: MyLabel = self.create_label(alignment=QtCore.Qt.AlignRight)
+        self.lp_label: BodyLabel = self.create_label()
+        self.return_label: BodyLabel = self.create_label(alignment=QtCore.Qt.AlignRight)
 
         form: QtWidgets.QFormLayout = QtWidgets.QFormLayout()
         form.addRow(self.ap5_label, self.av5_label)
@@ -835,11 +840,11 @@ class TradingWidget(QtWidgets.QWidget):
         self,
         color: str = "",
         alignment: int = QtCore.Qt.AlignLeft
-    ) -> MyLabel:
+    ) -> BodyLabel:
         """
         Create label with certain font color.
         """
-        label: MyLabel = MyLabel()
+        label: BodyLabel = BodyLabel()
         if color:
             label.setStyleSheet(f"color:{color}")
         label.setAlignment(alignment)
@@ -1198,7 +1203,7 @@ class AboutDialog(QtWidgets.QDialog):
             pandas - {importlib_metadata.version("pandas")}
             """
 
-        label: MyLabel = MyLabel()
+        label: BodyLabel = BodyLabel()
         label.setText(text)
         label.setMinimumWidth(500)
 

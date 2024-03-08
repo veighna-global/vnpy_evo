@@ -426,5 +426,5 @@ class HomeWidget(QtWidgets.QWidget):
         """
         Open connect dialog for gateway connection.
         """
-        dialog: ConnectDialog = ConnectDialog(self.main_engine, gateway_name)
+        dialog: ConnectDialog = ConnectDialog(self.main_engine, gateway_name, self)
         dialog.exec()
