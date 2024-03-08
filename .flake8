@@ -5,3 +5,16 @@ ignore =
     E501,
     # line break before binary operator
     W503,
+per-file-ignores =
+    vnpy_crypto\trader\app.py: F401, F403
+    vnpy_crypto\trader\converter.py: F401, F403
+    vnpy_crypto\trader\constant.py: F401, F403
+    vnpy_crypto\trader\database.py: F401, F403
+    vnpy_crypto\trader\datafeed.py: F401, F403
+    vnpy_crypto\trader\engine.py: F401, F403
+    vnpy_crypto\trader\event.py: F401, F403
+    vnpy_crypto\trader\gateway.py: F401, F403
+    vnpy_crypto\trader\object.py: F401, F403
+    vnpy_crypto\trader\optimize.py: F401, F403
+    vnpy_crypto\trader\setting.py: F401, F403
+    vnpy_crypto\trader\utility.py: F401, F403

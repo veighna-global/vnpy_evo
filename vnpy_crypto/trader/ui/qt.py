@@ -11,9 +11,7 @@ from qfluentwidgets import (
     setTheme, Theme,
     PushButton, TextEdit, SubtitleLabel
 )
-from qframelesswindow import FramelessWindow
 
-from vnpy.trader.locale import _
 from ..setting import SETTINGS
 from ..utility import get_icon_path
 
@@ -30,6 +28,7 @@ def create_qapp(app_name: str = "VeighNa Trader") -> QtWidgets.QApplication:
     Create Qt Application.
     """
     qapp: QtWidgets.QApplication = QtWidgets.QApplication(sys.argv)
+    setTheme(Theme.LIGHT)
 
     # Set up font
     font: QtGui.QFont = QtGui.QFont(SETTINGS["font.family"], SETTINGS["font.size"])

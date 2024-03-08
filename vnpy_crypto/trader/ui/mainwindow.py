@@ -2,7 +2,7 @@ from types import ModuleType
 import webbrowser
 from functools import partial
 from importlib import import_module
-from typing import Callable, Dict, List, Tuple
+from typing import Callable
 
 from qfluentwidgets import (
     FluentWindow,
@@ -54,8 +54,8 @@ class MainWindow(FluentWindow):
 
         self.window_title: str = _("VeighNa Trader 社区版 - {}   [{}]").format(vnpy.__version__, TRADER_DIR)
 
-        self.widgets: Dict[str, QtWidgets.QWidget] = {}
-        self.monitors: Dict[str, BaseMonitor] = {}
+        self.widgets: dict[str, QtWidgets.QWidget] = {}
+        self.monitors: dict[str, BaseMonitor] = {}
 
         self.init_ui()
 
@@ -148,7 +148,7 @@ class MainWindow(FluentWindow):
         # App menu
         app_menu: QtWidgets.QMenu = bar.addMenu(_("功能"))
 
-        all_apps: List[BaseApp] = self.main_engine.get_all_apps()
+        all_apps: list[BaseApp] = self.main_engine.get_all_apps()
         for app in all_apps:
             ui_module: ModuleType = import_module(app.app_module + ".ui")
             widget_class: QtWidgets.QWidget = getattr(ui_module, app.widget_name)
@@ -300,9 +300,9 @@ class PivotWidgdet(QtWidgets.QWidget):
     def add_widget(self, widget: QtWidgets.QWidget, name: str) -> None:
         """"""
         widget.setObjectName(name)
-    
+
         self.stacked_widget.addWidget(widget)
-    
+
         self.pivot.addItem(
             routeKey=name,
             text=name,
@@ -344,7 +344,7 @@ class HomeWidget(QtWidgets.QWidget):
         self.account_monitor = AccountMonitor(self.main_engine, self.event_engine)
         self.log_monitor = LogMonitor(self.main_engine, self.event_engine)
 
-        self.menu: RoundMenu  = RoundMenu(parent=self)
+        self.menu: RoundMenu = RoundMenu(parent=self)
 
         self.menu_button: PushButton = PushButton("System")
         self.menu_button.clicked.connect(self.show_menu)
@@ -392,7 +392,7 @@ class HomeWidget(QtWidgets.QWidget):
 
     def show_menu(self) -> None:
         """"""
-        pos = self.menu_button.mapToGlobal(QtCore.QPoint(self.menu_button.width() + 5, -100))
+        pos = self.menu_button.mapToGlobal(QtCore.QPoint(self.menu_button.width() + 5, 0))
         self.menu.exec(pos, ani=True)
 
     def connect_gateway(self, gateway_name: str) -> None:
