@@ -81,21 +81,12 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find contract")
 
         self.navigationInterface.addItem(
-            routeKey="email",
-            icon=FIF.MAIL,
-            text="Test email",
-            onClick=self.send_test_email,
-            selectable=False,
-            position=NavigationItemPosition.TOP
-        )
-
-        self.navigationInterface.addItem(
             routeKey="froum",
             icon=FIF.HELP,
             text="Community forum",
             onClick=self.open_forum,
             selectable=False,
-            position=NavigationItemPosition.TOP
+            position=NavigationItemPosition.BOTTOM
         )
 
         self.navigationInterface.addItem(
@@ -253,12 +244,6 @@ class MainWindow(FluentWindow):
             widget.exec()
         else:
             widget.show()
-
-    def send_test_email(self) -> None:
-        """
-        Sending a test email.
-        """
-        self.main_engine.send_email("VeighNa Trader", "testing")
 
     def open_forum(self) -> None:
         """
