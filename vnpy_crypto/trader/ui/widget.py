@@ -11,7 +11,14 @@ from copy import copy
 from tzlocal import get_localzone_name
 
 import importlib_metadata
-from qfluentwidgets import TableWidget
+from qfluentwidgets import (
+    TableWidget,
+    PushButton,
+    ComboBox,
+    LineEdit,
+    CheckBox,
+    BodyLabel as MyLabel
+)
 
 from vnpy.trader.locale import _
 from .qt import QtCore, QtGui, QtWidgets
@@ -613,13 +620,14 @@ class ConnectDialog(QtWidgets.QDialog):
         loaded_setting: dict = load_json(self.filename)
 
         # Initialize line edits and form layout based on setting.
-        form: QtWidgets.QFormLayout = QtWidgets.QFormLayout()
+        grid: QtWidgets.QGridLayout = QtWidgets.QGridLayout()
+        row: int = 0
 
         for field_name, field_value in default_setting.items():
             field_type: type = type(field_value)
 
             if field_type == list:
-                widget: QtWidgets.QComboBox = QtWidgets.QComboBox()
+                widget: ComboBox = ComboBox()
                 widget.addItems(field_value)
 
                 if field_name in loaded_setting:
@@ -627,27 +635,31 @@ class ConnectDialog(QtWidgets.QDialog):
                     ix: int = widget.findText(saved_value)
                     widget.setCurrentIndex(ix)
             else:
-                widget: QtWidgets.QLineEdit = QtWidgets.QLineEdit(str(field_value))
+                widget: LineEdit = LineEdit()
+                widget.setText(str(field_value))
 
                 if field_name in loaded_setting:
                     saved_value = loaded_setting[field_name]
                     widget.setText(str(saved_value))
 
                 if _("密码") in field_name:
-                    widget.setEchoMode(QtWidgets.QLineEdit.Password)
+                    widget.setEchoMode(LineEdit.Password)
 
                 if field_type == int:
                     validator: QtGui.QIntValidator = QtGui.QIntValidator()
                     widget.setValidator(validator)
 
-            form.addRow(f"{field_name} <{field_type.__name__}>", widget)
+            grid.addWidget(MyLabel(f"{field_name} <{field_type.__name__}>"), row, 0)
+            grid.addWidget(widget, row, 1)
             self.widgets[field_name] = (widget, field_type)
 
-        button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("连接"))
-        button.clicked.connect(self.connect)
-        form.addRow(button)
+            row += 1
 
-        self.setLayout(form)
+        button: PushButton = PushButton(_("连接"))
+        button.clicked.connect(self.connect)
+        grid.addWidget(button, row, 0, 1, 2)
+
+        self.setLayout(grid)
 
     def connect(self) -> None:
         """
@@ -697,57 +709,55 @@ class TradingWidget(QtWidgets.QWidget):
 
         # Trading function area
         exchanges: List[Exchange] = self.main_engine.get_all_exchanges()
-        self.exchange_combo: QtWidgets.QComboBox = QtWidgets.QComboBox()
+        self.exchange_combo: ComboBox = ComboBox()
         self.exchange_combo.addItems([exchange.value for exchange in exchanges])
 
-        self.symbol_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
+        self.symbol_line: LineEdit = LineEdit()
         self.symbol_line.returnPressed.connect(self.set_vt_symbol)
 
-        self.name_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
+        self.name_line: LineEdit = LineEdit()
         self.name_line.setReadOnly(True)
 
-        self.direction_combo: QtWidgets.QComboBox = QtWidgets.QComboBox()
-        self.direction_combo.addItems(
-            [Direction.LONG.value, Direction.SHORT.value])
+        self.direction_combo: ComboBox = ComboBox()
+        self.direction_combo.addItems([Direction.LONG.value, Direction.SHORT.value])
 
-        self.offset_combo: QtWidgets.QComboBox = QtWidgets.QComboBox()
+        self.offset_combo: ComboBox = ComboBox()
         self.offset_combo.addItems([offset.value for offset in Offset])
 
-        self.order_type_combo: QtWidgets.QComboBox = QtWidgets.QComboBox()
-        self.order_type_combo.addItems(
-            [order_type.value for order_type in OrderType])
+        self.order_type_combo: ComboBox = ComboBox()
+        self.order_type_combo.addItems([order_type.value for order_type in OrderType])
 
         double_validator: QtGui.QDoubleValidator = QtGui.QDoubleValidator()
         double_validator.setBottom(0)
 
-        self.price_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
+        self.price_line: LineEdit = LineEdit()
         self.price_line.setValidator(double_validator)
 
-        self.volume_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
+        self.volume_line: LineEdit = LineEdit()
         self.volume_line.setValidator(double_validator)
 
-        self.gateway_combo: QtWidgets.QComboBox = QtWidgets.QComboBox()
+        self.gateway_combo: ComboBox = ComboBox()
         self.gateway_combo.addItems(self.main_engine.get_all_gateway_names())
 
-        self.price_check: QtWidgets.QCheckBox = QtWidgets.QCheckBox()
+        self.price_check: CheckBox = CheckBox()
         self.price_check.setToolTip(_("设置价格随行情更新"))
 
-        send_button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("委托"))
+        send_button: PushButton = PushButton(_("委托"))
         send_button.clicked.connect(self.send_order)
 
-        cancel_button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("全撤"))
+        cancel_button: PushButton = PushButton(_("全撤"))
         cancel_button.clicked.connect(self.cancel_all)
 
         grid: QtWidgets.QGridLayout = QtWidgets.QGridLayout()
-        grid.addWidget(QtWidgets.QLabel(_("交易所")), 0, 0)
-        grid.addWidget(QtWidgets.QLabel(_("代码")), 1, 0)
-        grid.addWidget(QtWidgets.QLabel(_("名称")), 2, 0)
-        grid.addWidget(QtWidgets.QLabel(_("方向")), 3, 0)
-        grid.addWidget(QtWidgets.QLabel(_("开平")), 4, 0)
-        grid.addWidget(QtWidgets.QLabel(_("类型")), 5, 0)
-        grid.addWidget(QtWidgets.QLabel(_("价格")), 6, 0)
-        grid.addWidget(QtWidgets.QLabel(_("数量")), 7, 0)
-        grid.addWidget(QtWidgets.QLabel(_("接口")), 8, 0)
+        grid.addWidget(MyLabel(_("交易所")), 0, 0)
+        grid.addWidget(MyLabel(_("代码")), 1, 0)
+        grid.addWidget(MyLabel(_("名称")), 2, 0)
+        grid.addWidget(MyLabel(_("方向")), 3, 0)
+        grid.addWidget(MyLabel(_("开平")), 4, 0)
+        grid.addWidget(MyLabel(_("类型")), 5, 0)
+        grid.addWidget(MyLabel(_("价格")), 6, 0)
+        grid.addWidget(MyLabel(_("数量")), 7, 0)
+        grid.addWidget(MyLabel(_("接口")), 8, 0)
         grid.addWidget(self.exchange_combo, 0, 1, 1, 2)
         grid.addWidget(self.symbol_line, 1, 1, 1, 2)
         grid.addWidget(self.name_line, 2, 1, 1, 2)
@@ -765,42 +775,42 @@ class TradingWidget(QtWidgets.QWidget):
         bid_color: str = "red"
         ask_color: str = "green"
 
-        self.bp1_label: QtWidgets.QLabel = self.create_label(bid_color)
-        self.bp2_label: QtWidgets.QLabel = self.create_label(bid_color)
-        self.bp3_label: QtWidgets.QLabel = self.create_label(bid_color)
-        self.bp4_label: QtWidgets.QLabel = self.create_label(bid_color)
-        self.bp5_label: QtWidgets.QLabel = self.create_label(bid_color)
+        self.bp1_label: MyLabel = self.create_label(bid_color)
+        self.bp2_label: MyLabel = self.create_label(bid_color)
+        self.bp3_label: MyLabel = self.create_label(bid_color)
+        self.bp4_label: MyLabel = self.create_label(bid_color)
+        self.bp5_label: MyLabel = self.create_label(bid_color)
 
-        self.bv1_label: QtWidgets.QLabel = self.create_label(
+        self.bv1_label: MyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv2_label: QtWidgets.QLabel = self.create_label(
+        self.bv2_label: MyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv3_label: QtWidgets.QLabel = self.create_label(
+        self.bv3_label: MyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv4_label: QtWidgets.QLabel = self.create_label(
+        self.bv4_label: MyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
-        self.bv5_label: QtWidgets.QLabel = self.create_label(
+        self.bv5_label: MyLabel = self.create_label(
             bid_color, alignment=QtCore.Qt.AlignRight)
 
-        self.ap1_label: QtWidgets.QLabel = self.create_label(ask_color)
-        self.ap2_label: QtWidgets.QLabel = self.create_label(ask_color)
-        self.ap3_label: QtWidgets.QLabel = self.create_label(ask_color)
-        self.ap4_label: QtWidgets.QLabel = self.create_label(ask_color)
-        self.ap5_label: QtWidgets.QLabel = self.create_label(ask_color)
+        self.ap1_label: MyLabel = self.create_label(ask_color)
+        self.ap2_label: MyLabel = self.create_label(ask_color)
+        self.ap3_label: MyLabel = self.create_label(ask_color)
+        self.ap4_label: MyLabel = self.create_label(ask_color)
+        self.ap5_label: MyLabel = self.create_label(ask_color)
 
-        self.av1_label: QtWidgets.QLabel = self.create_label(
+        self.av1_label: MyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av2_label: QtWidgets.QLabel = self.create_label(
+        self.av2_label: MyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av3_label: QtWidgets.QLabel = self.create_label(
+        self.av3_label: MyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av4_label: QtWidgets.QLabel = self.create_label(
+        self.av4_label: MyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
-        self.av5_label: QtWidgets.QLabel = self.create_label(
+        self.av5_label: MyLabel = self.create_label(
             ask_color, alignment=QtCore.Qt.AlignRight)
 
-        self.lp_label: QtWidgets.QLabel = self.create_label()
-        self.return_label: QtWidgets.QLabel = self.create_label(alignment=QtCore.Qt.AlignRight)
+        self.lp_label: MyLabel = self.create_label()
+        self.return_label: MyLabel = self.create_label(alignment=QtCore.Qt.AlignRight)
 
         form: QtWidgets.QFormLayout = QtWidgets.QFormLayout()
         form.addRow(self.ap5_label, self.av5_label)
@@ -825,11 +835,11 @@ class TradingWidget(QtWidgets.QWidget):
         self,
         color: str = "",
         alignment: int = QtCore.Qt.AlignLeft
-    ) -> QtWidgets.QLabel:
+    ) -> MyLabel:
         """
         Create label with certain font color.
         """
-        label: QtWidgets.QLabel = QtWidgets.QLabel()
+        label: MyLabel = MyLabel()
         if color:
             label.setStyleSheet(f"color:{color}")
         label.setAlignment(alignment)
@@ -1087,10 +1097,10 @@ class ContractManager(QtWidgets.QWidget):
         self.setWindowTitle(_("合约查询"))
         self.resize(1000, 600)
 
-        self.filter_line: QtWidgets.QLineEdit = QtWidgets.QLineEdit()
+        self.filter_line: LineEdit = LineEdit()
         self.filter_line.setPlaceholderText(_("输入合约代码或者交易所，留空则查询所有合约"))
 
-        self.button_show: QtWidgets.QPushButton = QtWidgets.QPushButton(_("查询"))
+        self.button_show: PushButton = PushButton(_("查询"))
         self.button_show.clicked.connect(self.show_contracts)
 
         labels: list = []
@@ -1188,7 +1198,7 @@ class AboutDialog(QtWidgets.QDialog):
             pandas - {importlib_metadata.version("pandas")}
             """
 
-        label: QtWidgets.QLabel = QtWidgets.QLabel()
+        label: MyLabel = MyLabel()
         label.setText(text)
         label.setMinimumWidth(500)
 
@@ -1223,12 +1233,12 @@ class GlobalDialog(QtWidgets.QDialog):
 
         for field_name, field_value in settings.items():
             field_type: type = type(field_value)
-            widget: QtWidgets.QLineEdit = QtWidgets.QLineEdit(str(field_value))
+            widget: LineEdit = LineEdit(str(field_value))
 
             form.addRow(f"{field_name} <{field_type.__name__}>", widget)
             self.widgets[field_name] = (widget, field_type)
 
-        button: QtWidgets.QPushButton = QtWidgets.QPushButton(_("确定"))
+        button: PushButton = PushButton(_("确定"))
         button.clicked.connect(self.update_setting)
         form.addRow(button)
 
