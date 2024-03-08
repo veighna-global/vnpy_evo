@@ -1165,23 +1165,20 @@ class ContractManager(QtWidgets.QWidget):
         self.contract_table.resizeColumnsToContents()
 
 
-class AboutDialog(QtWidgets.QDialog):
+class AboutDialog(MessageBoxBase):
     """
     Information about the trading platform.
     """
 
-    def __init__(self, main_engine: MainEngine, event_engine: EventEngine) -> None:
+    def __init__(self, parent: QtWidgets.QWidget) -> None:
         """"""
-        super().__init__()
-
-        self.main_engine: MainEngine = main_engine
-        self.event_engine: EventEngine = event_engine
+        super().__init__(parent)
 
         self.init_ui()
 
     def init_ui(self) -> None:
         """"""
-        self.setWindowTitle(_("关于VeighNa Trader"))
+        self.title_label = SubtitleLabel("About VeighNa Trader", self)
 
         from ... import __version__ as vnpy_version
 
@@ -1207,9 +1204,10 @@ class AboutDialog(QtWidgets.QDialog):
         label.setText(text)
         label.setMinimumWidth(500)
 
-        vbox: QtWidgets.QVBoxLayout = QtWidgets.QVBoxLayout()
-        vbox.addWidget(label)
-        self.setLayout(vbox)
+        self.viewLayout.addWidget(self.title_label)
+        self.viewLayout.addWidget(label)
+
+        self.cancelButton.hide()
 
 
 class GlobalDialog(QtWidgets.QDialog):

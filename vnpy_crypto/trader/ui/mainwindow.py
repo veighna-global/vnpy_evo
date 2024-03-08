@@ -11,7 +11,8 @@ from qfluentwidgets import (
     PushButton,
     RoundMenu,
     Action,
-    MessageBox
+    MessageBox,
+    NavigationItemPosition
 )
 
 
@@ -67,9 +68,6 @@ class MainWindow(FluentWindow):
 
         self.init_widgets()
         self.init_navigation()
-        # self.init_toolbar()
-        # self.init_menu()
-        # self.load_window_setting("custom")
 
     def init_widgets(self) -> None:
         """"""
@@ -82,7 +80,34 @@ class MainWindow(FluentWindow):
     def init_navigation(self) -> None:
         """"""
         self.addSubInterface(self.home_widget, FIF.HOME, "Home")
-        self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find Contract")
+        self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find contract")
+
+        self.navigationInterface.addItem(
+            routeKey="email",
+            icon=FIF.MAIL,
+            text="Test email",
+            onClick=self.send_test_email,
+            selectable=False,
+            position=NavigationItemPosition.BOTTOM
+        )
+
+        self.navigationInterface.addItem(
+            routeKey="froum",
+            icon=FIF.HELP,
+            text="Community forum",
+            onClick=self.open_forum,
+            selectable=False,
+            position=NavigationItemPosition.BOTTOM
+        )
+
+        self.navigationInterface.addItem(
+            routeKey="about",
+            icon=FIF.INFO,
+            text="About",
+            onClick=self.open_about,
+            selectable=False,
+            position=NavigationItemPosition.BOTTOM
+        )
 
     def init_menu(self) -> None:
         """"""
@@ -168,23 +193,6 @@ class MainWindow(FluentWindow):
             partial(self.open_widget, AboutDialog, "about"),
         )
 
-    def init_toolbar(self) -> None:
-        """"""
-        self.toolbar: QtWidgets.QToolBar = QtWidgets.QToolBar(self)
-        self.toolbar.setObjectName(_("工具栏"))
-        self.toolbar.setFloatable(False)
-        self.toolbar.setMovable(False)
-
-        # Set button size
-        w: int = 40
-        size = QtCore.QSize(w, w)
-        self.toolbar.setIconSize(size)
-
-        # Set button spacing
-        self.toolbar.layout().setSpacing(10)
-
-        self.addToolBar(QtCore.Qt.LeftToolBarArea, self.toolbar)
-
     def add_action(
         self,
         menu: QtWidgets.QMenu,
@@ -204,26 +212,6 @@ class MainWindow(FluentWindow):
 
         if toolbar:
             self.toolbar.addAction(action)
-
-    def create_dock(
-        self,
-        widget_class: QtWidgets.QWidget,
-        name: str,
-        area: int
-    ) -> Tuple[QtWidgets.QWidget, QtWidgets.QDockWidget]:
-        """
-        Initialize a dock widget.
-        """
-        widget: QtWidgets.QWidget = widget_class(self.main_engine, self.event_engine)
-        if isinstance(widget, BaseMonitor):
-            self.monitors[name] = widget
-
-        dock: QtWidgets.QDockWidget = QtWidgets.QDockWidget(name)
-        dock.setWidget(widget)
-        dock.setObjectName(name)
-        dock.setFeatures(dock.DockWidgetFloatable | dock.DockWidgetMovable)
-        self.addDockWidget(area, dock)
-        return widget, dock
 
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         """
@@ -259,33 +247,6 @@ class MainWindow(FluentWindow):
         else:
             widget.show()
 
-    def save_window_setting(self, name: str) -> None:
-        """
-        Save current window size and state by trader path and setting name.
-        """
-        settings: QtCore.QSettings = QtCore.QSettings(self.window_title, name)
-        settings.setValue("state", self.saveState())
-        settings.setValue("geometry", self.saveGeometry())
-
-    def load_window_setting(self, name: str) -> None:
-        """
-        Load previous window size and state by trader path and setting name.
-        """
-        settings: QtCore.QSettings = QtCore.QSettings(self.window_title, name)
-        state = settings.value("state")
-        geometry = settings.value("geometry")
-
-        if isinstance(state, QtCore.QByteArray):
-            self.restoreState(state)
-            self.restoreGeometry(geometry)
-
-    def restore_window_setting(self) -> None:
-        """
-        Restore window to default setting.
-        """
-        self.load_window_setting("default")
-        self.showMaximized()
-
     def send_test_email(self) -> None:
         """
         Sending a test email.
@@ -301,6 +262,13 @@ class MainWindow(FluentWindow):
         """
         """
         dialog: GlobalDialog = GlobalDialog()
+        dialog.exec()
+
+    def open_about(self) -> None:
+        """
+        Open contract manager.
+        """
+        dialog: AboutDialog = AboutDialog(self)
         dialog.exec()
 
 
