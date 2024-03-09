@@ -87,13 +87,22 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.contract_manager, FIF.SEARCH, "Find contract")
 
         for name, widget in self.app_widgets.items():
-            self.addSubInterface(widget, FIF.APPLICATION, name)
+            self.addSubInterface(widget, FIF.ROBOT, name)
 
         self.navigationInterface.addItem(
             routeKey="froum",
             icon=FIF.HELP,
             text="Community forum",
             onClick=self.open_forum,
+            selectable=False,
+            position=NavigationItemPosition.BOTTOM
+        )
+
+        self.navigationInterface.addItem(
+            routeKey="github",
+            icon=FIF.GITHUB,
+            text="Github",
+            onClick=self.open_github,
             selectable=False,
             position=NavigationItemPosition.BOTTOM
         )
@@ -116,110 +125,6 @@ class MainWindow(FluentWindow):
             position=NavigationItemPosition.BOTTOM
         )
 
-    def init_menu(self) -> None:
-        """"""
-        bar: QtWidgets.QMenuBar = self.menuBar()
-        bar.setNativeMenuBar(False)     # for mac and linux
-
-        # System menu
-        sys_menu: QtWidgets.QMenu = bar.addMenu(_("系统"))
-
-        gateway_names: list = self.main_engine.get_all_gateway_names()
-        for name in gateway_names:
-            func: Callable = partial(self.connect_gateway, name)
-            self.add_action(
-                sys_menu,
-                _("连接{}").format(name),
-                get_icon_path(__file__, "connect.ico"),
-                func
-            )
-
-        sys_menu.addSeparator()
-
-        self.add_action(
-            sys_menu,
-            _("退出"),
-            get_icon_path(__file__, "exit.ico"),
-            self.close
-        )
-
-        # App menu
-        app_menu: QtWidgets.QMenu = bar.addMenu(_("功能"))
-
-        all_apps: list[BaseApp] = self.main_engine.get_all_apps()
-        for app in all_apps:
-            ui_module: ModuleType = import_module(app.app_module + ".ui")
-            widget_class: QtWidgets.QWidget = getattr(ui_module, app.widget_name)
-
-            func: Callable = partial(self.open_widget, widget_class, app.app_name)
-
-            self.add_action(app_menu, app.display_name, app.icon_name, func, True)
-
-        # Global setting editor
-        action: QtGui.QAction = QtWidgets.QAction(_("配置"), self)
-        action.triggered.connect(self.edit_global_setting)
-        bar.addAction(action)
-
-        # Help menu
-        help_menu: QtWidgets.QMenu = bar.addMenu(_("帮助"))
-
-        self.add_action(
-            help_menu,
-            _("查询合约"),
-            get_icon_path(__file__, "contract.ico"),
-            partial(self.open_widget, ContractManager, "contract"),
-            True
-        )
-
-        self.add_action(
-            help_menu,
-            _("还原窗口"),
-            get_icon_path(__file__, "restore.ico"),
-            self.restore_window_setting
-        )
-
-        self.add_action(
-            help_menu,
-            _("测试邮件"),
-            get_icon_path(__file__, "email.ico"),
-            self.send_test_email
-        )
-
-        self.add_action(
-            help_menu,
-            _("社区论坛"),
-            get_icon_path(__file__, "forum.ico"),
-            self.open_forum,
-            True
-        )
-
-        self.add_action(
-            help_menu,
-            _("关于"),
-            get_icon_path(__file__, "about.ico"),
-            partial(self.open_widget, AboutDialog, "about"),
-        )
-
-    def add_action(
-        self,
-        menu: QtWidgets.QMenu,
-        action_name: str,
-        icon_name: str,
-        func: Callable,
-        toolbar: bool = False
-    ) -> None:
-        """"""
-        icon: QtGui.QIcon = QtGui.QIcon(icon_name)
-
-        action: QtGui.QAction = QtWidgets.QAction(action_name, self)
-        action.triggered.connect(func)
-        action.setIcon(icon)
-
-        menu.addAction(action)
-
-        if toolbar:
-            self.toolbar.addAction(action)
-
     def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         """
         Call main engine close function before exit.
@@ -234,24 +139,15 @@ class MainWindow(FluentWindow):
         else:
             event.ignore()
 
-    def open_widget(self, widget_class: QtWidgets.QWidget, name: str) -> None:
-        """
-        Open contract manager.
-        """
-        widget: QtWidgets.QWidget = self.widgets.get(name, None)
-        if not widget:
-            widget = widget_class(self.main_engine, self.event_engine)
-            self.widgets[name] = widget
-
-        if isinstance(widget, QtWidgets.QDialog):
-            widget.exec()
-        else:
-            widget.show()
-
     def open_forum(self) -> None:
         """
         """
         webbrowser.open("https://www.vnpy.com/forum/")
+
+    def open_github(self) -> None:
+        """
+        """
+        webbrowser.open("https://github.com/veighna-global/vnpy_crypto")
 
     def edit_global_setting(self) -> None:
         """
