@@ -1,4 +1,4 @@
-# By Traders, For Traders.
+# By Crypto Traders, For Crypto Traders.
 
 <p align="center">
   <img src ="https://github.com/veighna-global/vnpy_crypto/blob/dev/logo.png" width="300" height="300"/>
