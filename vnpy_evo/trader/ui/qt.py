@@ -23,7 +23,7 @@ QtCore.QDate.toPyDate = QtCore.QDate.toPython
 QtCore.QDateTime.toPyDate = QtCore.QDateTime.toPython
 
 
-def create_qapp(app_name: str = "VeighNa Crypto") -> QtWidgets.QApplication:
+def create_qapp(app_name: str = "VeighNa Evo") -> QtWidgets.QApplication:
     """
     Create Qt Application.
     """

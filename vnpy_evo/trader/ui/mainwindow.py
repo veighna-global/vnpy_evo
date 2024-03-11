@@ -15,7 +15,7 @@ from qfluentwidgets import (
 from vnpy.event import EventEngine
 from vnpy.trader.locale import _
 
-import vnpy_crypto
+import vnpy_evo
 from .qt import QtCore, QtGui, QtWidgets
 from .widget import (
     ConnectDialog,
@@ -50,7 +50,7 @@ class MainWindow(FluentWindow):
         self.main_engine: MainEngine = main_engine
         self.event_engine: EventEngine = event_engine
 
-        self.window_title: str = f"VeighNa Crypto - {vnpy_crypto.__version__}  [{TRADER_DIR}]"
+        self.window_title: str = f"VeighNa Evo - {vnpy_evo.__version__}  [{TRADER_DIR}]"
 
         self.app_widgets: dict[str, QtWidgets.QWidget] = {}
 
@@ -148,7 +148,7 @@ class MainWindow(FluentWindow):
     def open_github(self) -> None:
         """
         """
-        webbrowser.open("https://github.com/veighna-global/vnpy_crypto")
+        webbrowser.open("https://github.com/veighna-global/vnpy_evo")
 
     def edit_global_setting(self) -> None:
         """

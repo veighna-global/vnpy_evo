@@ -501,10 +501,10 @@ class AboutDialog(MessageBoxBase):
 
     def init_ui(self) -> None:
         """"""
-        self.title_label = SubtitleLabel("About VeighNa Crypto", self)
+        self.title_label = SubtitleLabel("About VeighNa Evo", self)
 
         from vnpy import __version__ as vnpy_version
-        from ... import __version__ as crypto_version
+        from ... import __version__ as evo_version
 
         text: str = f"""
             By Traders, For Traders.
@@ -517,7 +517,7 @@ class AboutDialog(MessageBoxBase):
             Github：www.github.com/vnpy/vnpy
 
 
-            VeighNa Crypto - {crypto_version}
+            VeighNa Evo - {evo_version}
             VeighNa - {vnpy_version}
             Python - {platform.python_version()}
             PySide6 - {importlib_metadata.version("pyside6")}

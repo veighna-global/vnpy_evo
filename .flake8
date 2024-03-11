@@ -6,15 +6,15 @@ ignore =
     # line break before binary operator
     W503,
 per-file-ignores =
-    vnpy_crypto\trader\app.py: F401, F403
-    vnpy_crypto\trader\converter.py: F401, F403
-    vnpy_crypto\trader\constant.py: F401, F403
-    vnpy_crypto\trader\database.py: F401, F403
-    vnpy_crypto\trader\datafeed.py: F401, F403
-    vnpy_crypto\trader\engine.py: F401, F403
-    vnpy_crypto\trader\event.py: F401, F403
-    vnpy_crypto\trader\gateway.py: F401, F403
-    vnpy_crypto\trader\object.py: F401, F403
-    vnpy_crypto\trader\optimize.py: F401, F403
-    vnpy_crypto\trader\setting.py: F401, F403
-    vnpy_crypto\trader\utility.py: F401, F403
+    vnpy_evo\trader\app.py: F401, F403
+    vnpy_evo\trader\converter.py: F401, F403
+    vnpy_evo\trader\constant.py: F401, F403
+    vnpy_evo\trader\database.py: F401, F403
+    vnpy_evo\trader\datafeed.py: F401, F403
+    vnpy_evo\trader\engine.py: F401, F403
+    vnpy_evo\trader\event.py: F401, F403
+    vnpy_evo\trader\gateway.py: F401, F403
+    vnpy_evo\trader\object.py: F401, F403
+    vnpy_evo\trader\optimize.py: F401, F403
+    vnpy_evo\trader\setting.py: F401, F403
+    vnpy_evo\trader\utility.py: F401, F403
