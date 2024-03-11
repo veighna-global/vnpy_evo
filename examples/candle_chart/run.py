@@ -1,9 +1,9 @@
 from datetime import datetime
 
-from vnpy_crypto.trader.ui import create_qapp, QtCore
-from vnpy_crypto.trader.constant import Exchange, Interval
-from vnpy_crypto.trader.database import get_database
-from vnpy_crypto.chart import ChartWidget, VolumeItem, CandleItem
+from vnpy_evo.trader.ui import create_qapp, QtCore
+from vnpy_evo.trader.constant import Exchange, Interval
+from vnpy_evo.trader.database import get_database
+from vnpy_evo.chart import ChartWidget, VolumeItem, CandleItem
 
 
 if __name__ == "__main__":

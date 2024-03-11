@@ -1,22 +1,28 @@
 # By Traders, For Traders.
 
 <p align="center">
-  <img src ="https://github.com/veighna-global/vnpy_crypto/blob/dev/logo.png" width="300" height="300"/>
+  <img src ="https://github.com/veighna-global/vnpy_evo/blob/dev/logo.png" width="300" height="300"/>
 </p>
 
 <p align="center">
     <img src ="https://img.shields.io/badge/version-0.1.0-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows|linux|macos-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12-blue.svg" />
-    <img src ="https://img.shields.io/github/actions/workflow/status/veighna-global/vnpy_crypto/pythonapp.yml?branch=master"/>
-    <img src ="https://img.shields.io/github/license/veighna-global/vnpy_crypto.svg?color=orange"/>
+    <img src ="https://img.shields.io/github/license/veighna-global/vnpy_evo.svg?color=orange"/>
 </p>
 
-VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market. 
+VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market. 
 
-## Functional Features
+## Social
 
-1. Full-featured quantitative trading platform (vnpy_crypto.trader) 
+- <sub>[![Twitter](https://img.shields.io/twitter/follow/veighna.svg?style=social&label=VeighNa%20Global)](https://x.com/veighna_global)</sub>  Follow us on Twitter
+- <sub>[![Telegram Announcements](https://img.shields.io/badge/VeighNa%20Global-Channel-blue?logo=telegram)](https://t.me/veighna_channel)</sub>  Follow our important announcements
+- <sub>[![Telegram Chat](https://img.shields.io/badge/VeighNa%20Global-Chat-blue?logo=telegram)](https://t.me/+8KGF_z35nK03YWE1)</sub>  If you need technical support
+
+
+## Features
+
+1. Full-featured quantitative trading platform (vnpy_evo.trader) 
 
 2. Gateways which connect to exchanges for receiving market data and sending trading orders: 
 
@@ -34,7 +40,7 @@ VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https
 
         * RPC service ([rpc](https://www.github.com/vnpy/vnpy_rpcservice)): inter-process communication interface for distributed architecture
 
-3. Applications for various quantitative strategies (vnpy_crypto.app).
+3. Applications for various quantitative strategies (vnpy_evo.app).
 
     * [cta_strategy](https://www.github.com/vnpy/vnpy_ctastrategy): CTA strategy engine module, which allows users to perform fine-grained control over the withdrawal behavior of delegates during the operation of CTA-type strategies while maintaining ease of use (reducing trading slippage, implementing high-frequency strategies)
 
@@ -76,13 +82,13 @@ VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https
     * Websocket Client ([websocket](https://www.github.com/vnpy/vnpy_websocket)): The high-performance websocket API client based on coroutine process asynchronous IO supports which sharing event loops with REST Client to avoid multi-threaded performance loss caused by GIL
 
 
-5. Event processing engine (vnpy_crypto.event), which is the core of event-driven trading program
+5. Event processing engine (vnpy_evo.event), which is the core of event-driven trading program
 
 6. Database adaptors which support most commonly used databases:
 
     * SQL
 
-        * SQLite ([sqlite](https://www.github.com/vnpy/vnpy_sqlite)): lightweight single file database, no need to install and configure data service programs, default option of vnpy_crypto.py, suitable for novice users
+        * SQLite ([sqlite](https://www.github.com/vnpy/vnpy_sqlite)): lightweight single file database, no need to install and configure data service programs, default option of vnpy_evo.py, suitable for novice users
 
         * MySQL ([mysql](https://www.github.com/vnpy/vnpy_mysql)): the world's most popular open source relational database, extremely rich documentation, and can replace other high NewSQL compatible implementations (such as TiDB)
 
@@ -96,13 +102,13 @@ VeighNa Crypto (vnpy_crypto) is the core module for using [VeighNa (vnpy)](https
         
         * LevelDB ([leveldb](https://www.github.com/vnpy/vnpy_leveldb)): The high-performance key/value database launched by Google which realizes the process memory storage engine based on LSM algorithm, and supports billions of levels of massive data
 
-7. Standarad RPC solution (vnpy_crypto.rpc) for implementing complex trading systems with distributed deployments
+7. Standarad RPC solution (vnpy_evo.rpc) for implementing complex trading systems with distributed deployments
 
-8. High-performance charting widget (vnpy_crypto.chart), which supports stream market data update
+8. High-performance charting widget (vnpy_evo.chart), which supports stream market data update
 
-## Installation
+## Install
 
-Download the latest version from [here](https://github.com/vnpy/vnpy/releases), unzip it and run the following command to install it.
+Download the latest version from [here](https://github.com/veighna_global/vnpy_evo/releases), unzip it and run the following command to install it.
 
 **Windows**
 
@@ -113,7 +119,7 @@ install.bat
 **Ubuntu**
 
 ```
-. install.sh
+bash install.sh
 ```
 
 **Macos**
@@ -122,14 +128,14 @@ install.bat
 bash install_osx.sh
 ```
 
-## Quick Start
+## Example
 
-You can start running VeighNa Crypto with only a few lines of code.
+You can start running VeighNa Evo with only a few lines of code.
 
 ```Python
-from vnpy_crypto.event import EventEngine
-from vnpy_crypto.trader.engine import MainEngine
-from vnpy_crypto.trader.ui import MainWindow, create_qapp
+from vnpy_evo.event import EventEngine
+from vnpy_evo.trader.engine import MainEngine
+from vnpy_evo.trader.ui import MainWindow, create_qapp
 
 from vnpy_binance import BinanceUsdtGateway
 from vnpy_ctastrategy import CtaStrategyApp
