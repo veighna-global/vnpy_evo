@@ -1,3 +1,3 @@
-# 3.9.0
+# 0.1.0
 
-1. First release of VeighNa Crypto
+1. The first release of VeighNa Evo

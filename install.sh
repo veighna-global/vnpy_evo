@@ -33,5 +33,5 @@ function ta-lib-exists()
 }
 ta-lib-exists || install-ta-lib
 
-# Install vnpy_crypto
+# Install vnpy_evo
 $python -m pip install . --index $pypi_index

@@ -1,6 +1,6 @@
-from vnpy_crypto.event import EventEngine
-from vnpy_crypto.trader.engine import MainEngine
-from vnpy_crypto.trader.ui import MainWindow, create_qapp
+from vnpy_evo.event import EventEngine
+from vnpy_evo.trader.engine import MainEngine
+from vnpy_evo.trader.ui import MainWindow, create_qapp
 
 from vnpy_rpcservice import RpcGateway
 from vnpy_ctastrategy import CtaStrategyApp

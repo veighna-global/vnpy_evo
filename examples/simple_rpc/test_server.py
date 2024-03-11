@@ -2,7 +2,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 from time import sleep, time
 
-from vnpy_crypto.rpc import RpcServer
+from vnpy_evo.rpc import RpcServer
 
 
 class TestServer(RpcServer):
