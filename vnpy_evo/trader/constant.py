@@ -22,5 +22,8 @@ class Exchange(Enum):
     BYBIT = "BYBIT"
     DERIBIT = "DERIBIT"
 
+    # Global
+    OTC = "OTC"
+
     # Special Function
     LOCAL = "LOCAL"         # For local generated data
