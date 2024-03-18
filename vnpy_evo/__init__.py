@@ -20,5 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+os.environ["LANG"] = "en"       # Only support English
+
 
 __version__ = "0.1.0"

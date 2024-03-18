@@ -13,7 +13,6 @@ from qfluentwidgets import (
 )
 
 from vnpy.event import EventEngine
-from vnpy.trader.locale import _
 
 import vnpy_evo
 from .qt import QtCore, QtGui, QtWidgets
