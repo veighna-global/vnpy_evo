@@ -27,17 +27,3 @@ class Exchange(Enum):
 
     # Special Function
     LOCAL = "LOCAL"         # For local generated data
-
-
-class TransferType(Enum):
-    """
-    Transfer type.
-    """
-    SPOT_TRADING = "spot to trading"
-    TRADING_SPOT = "trading to spot"
-
-    SPOT_LINEAR = "spot to linear"
-    LINEAR_SPOT = "linear to spot"
-
-    SPOT_INVERSE = "spot to inverse"
-    INVERSE_SPOT = "inverse to spot"
