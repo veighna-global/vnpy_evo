@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src ="https://img.shields.io/badge/version-0.1.0-blueviolet.svg"/>
+    <img src ="https://img.shields.io/badge/version-0.2.0-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows|linux|macos-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12-blue.svg"/>
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_evo.svg?color=orange"/>
@@ -32,9 +32,11 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
 
         * OKX ([okx](https://www.github.com/veighna-global/vnpy_okx)): Spot/Perpetual/Futures/Option
 
-        * Bybit ([bybit](https://www.github.com/veighna-global/vnpy_bybit)): Spot/Perpetual/Futures
+        * Bybit ([bybit](https://www.github.com/veighna-global/vnpy_bybit)): Spot/Perpetual/Futures/Option
 
-        * Deribit ([deribit](https://www.github.com/veighna-global/vnpy_deribit)): Perpetual/Futures/Option
+    * Forex Market
+
+        * MT5 ([mt5](https://www.github.com/veighna-global/vnpy_mt5)): Forex/Gold/Commodity/Crypto
 
     * Special Applications
 
