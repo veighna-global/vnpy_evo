@@ -20,6 +20,7 @@ class Exchange(Enum):
     BINANCE = "BINANCE"
     OKX = "OKX"
     BYBIT = "BYBIT"
+    BTSE = "BTSE"
     DERIBIT = "DERIBIT"
 
     # Global
