@@ -1,3 +1,7 @@
+# 0.2.1
+
+1. add BTSE exchange num
+
 # 0.2.0
 
 ## Gateway
