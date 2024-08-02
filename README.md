@@ -11,7 +11,7 @@
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_evo.svg?color=orange"/>
 </p>
 
-VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market. 
+VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market.
 
 ## Social
 
@@ -22,9 +22,9 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
 
 ## Features
 
-1. Full-featured quantitative trading platform (vnpy_evo.trader) 
+1. Full-featured quantitative trading platform (vnpy_evo.trader)
 
-2. Gateways which connect to exchanges for receiving market data and sending trading orders: 
+2. Gateways which connect to exchanges for receiving market data and sending trading orders:
 
     * Crypto Market
 
@@ -71,14 +71,14 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
     * [excel_rtd](https://www.github.com/vnpy/vnpy_excelrtd): Excel RTD (Real Time Data) real-time data service, based on pyxll module to achieve real-time push updates of various data (quotes, contracts, positions, etc.) in Excel
 
     * [risk_manager](https://www.github.com/vnpy/vnpy_riskmanager): risk management module, providing statistics and restrictions on rules including trade flow control, number of orders placed, active orders, total number of cancelled orders, etc., effectively realizing front-end risk control functions
-    
+
     * [web_trader](https://www.github.com/vnpy/vnpy_webtrader): The web service module is designed according to the requirements of B-S architecture, and implements a web server that provides active function call (REST) and passive data push (WebSocket)
 
 
 4. Standard network clients for connecting to exchange APIs:
-    
+
     * REST Client ([rest](https://www.github.com/vnpy/vnpy_rest)): The high-performance rest API client based on coroutine process asynchronous IO which adopts the programming model of event message cycle to support the sending of high concurrent real-time transaction requests
-    
+
     * Websocket Client ([websocket](https://www.github.com/vnpy/vnpy_websocket)): The high-performance websocket API client based on coroutine process asynchronous IO supports which sharing event loops with REST Client to avoid multi-threaded performance loss caused by GIL
 
 
@@ -97,9 +97,9 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
     * NoSQL
 
         * MongoDB ([mongodb](https://www.github.com/vnpy/vnpy_mongodb)): non-relational database based on distributed file storage (bson format), built-in memory cache of hot data provides faster read and write speeds
-        
+
         * InfluxDB ([influxdb](https://www.github.com/vnpy/vnpy_influxdb)): non-relational database specially designed for time-series data, columnar data storage provides high read/write efficiency and peripheral analysis applications
-        
+
         * LevelDB ([leveldb](https://www.github.com/vnpy/vnpy_leveldb)): The high-performance key/value database launched by Google which realizes the process memory storage engine based on LSM algorithm, and supports billions of levels of massive data
 
 7. Standarad RPC solution (vnpy_evo.rpc) for implementing complex trading systems with distributed deployments
@@ -146,7 +146,7 @@ def main():
 
     event_engine = EventEngine()
     main_engine = MainEngine(event_engine)
-    
+
     main_engine.add_gateway(BinanceUsdtGateway)
     main_engine.add_app(CtaStrategyApp)
     main_engine.add_app(CtaBacktesterApp)
@@ -156,7 +156,7 @@ def main():
 
     qapp.exec()
 
-if __name__ == "__main__"。
+if __name__ == "__main__":
     main()
 ```
 
