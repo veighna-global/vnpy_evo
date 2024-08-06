@@ -638,7 +638,7 @@ class ContractManager(QtWidgets.QWidget):
 
         labels: list = []
         for name, display in self.headers.items():
-            label: str = f"{display}\n{name}"
+            label: str = f"{display}"
             labels.append(label)
 
         self.contract_table: TableWidget = TableWidget()

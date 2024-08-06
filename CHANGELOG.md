@@ -1,3 +1,7 @@
+# 0.2.2
+
+1. reimplement extract_vt_symbol function
+
 # 0.2.1
 
 1. add BTSE exchange num
