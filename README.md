@@ -42,7 +42,7 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
 
 3. Applications for various quantitative strategies:
 
-    * [nova_strategy](https://www.github.com/veighna-global/vnpy_novastrategy): The quant strategy app module which is designed specifically for crypto markets, supports trend following, pair trading, multi-factor and many other types of quant strategies.
+    * Nova Strategy ([nova_strategy](https://www.github.com/veighna-global/vnpy_novastrategy)): The quant strategy app module which is designed specifically for crypto markets, supports trend following, pair trading, multi-factor and many other types of quant strategies.
 
 4. Event processing engine (vnpy_evo.event), which is the core of event-driven trading program
 
