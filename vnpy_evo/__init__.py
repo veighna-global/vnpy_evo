@@ -24,4 +24,4 @@ import os
 os.environ["LANG"] = "en"       # Only support English
 
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"
