@@ -33,7 +33,8 @@ from .monitor import (
     ActiveOrderMonitor,
     ContractManager
 )
-from ..engine import MainEngine, BaseApp
+from ..app import BaseApp
+from ..engine import MainEngine
 from ..utility import get_icon_path, TRADER_DIR
 
 
