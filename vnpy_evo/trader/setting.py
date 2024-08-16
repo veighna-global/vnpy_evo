@@ -34,7 +34,12 @@ SETTINGS: dict[str, object] = {
     "database.host": "",
     "database.port": 0,
     "database.user": "",
-    "database.password": ""
+    "database.password": "",
+
+    "telegram.active": False,
+    "telegram.token": "",
+    "telegram.chat": 0,
+    "telegram.proxy": "",
 }
 
 
