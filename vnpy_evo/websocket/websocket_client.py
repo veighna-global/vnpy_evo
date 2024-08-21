@@ -54,20 +54,24 @@ class WebsocketClient:
         self.ping_interval = 60  # seconds
         self.header = {}
 
+        self._receive_timeout: int = 0
+
         self.logger: Optional[logging.Logger] = None
 
         # For debugging
         self._last_sent_text = None
         self._last_received_text = None
 
-    def init(self,
-             host: str,
-             proxy_host: str = "",
-             proxy_port: int = 0,
-             ping_interval: int = 60,
-             header: dict = None,
-             log_path: Optional[str] = None,
-             ):
+    def init(
+        self,
+        host: str,
+        proxy_host: str = "",
+        proxy_port: int = 0,
+        ping_interval: int = 60,
+        header: dict = None,
+        log_path: Optional[str] = None,
+        receive_timeout: int = 60
+    ):
         """
         :param host:
         :param proxy_host:
@@ -88,6 +92,8 @@ class WebsocketClient:
         if proxy_host and proxy_port:
             self.proxy_host = proxy_host
             self.proxy_port = proxy_port
+
+        self._receive_timeout = receive_timeout
 
     def start(self):
         """
@@ -155,7 +161,7 @@ class WebsocketClient:
 
     def _create_connection(self, *args, **kwargs):
         """"""
-        return websocket.create_connection(*args, **kwargs)
+        return websocket.create_connection(timeout=self._receive_timeout, *args, **kwargs)
 
     def _ensure_connection(self):
         """"""
