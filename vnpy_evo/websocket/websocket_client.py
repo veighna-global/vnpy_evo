@@ -18,7 +18,7 @@ class WebsocketClient:
     """
     Websocket API
 
-    After creating the client object, use start() to run worker and ping threads.
+    After creating the client object, use start() to run worker thread.
     The worker thread connects websocket automatically.
 
     Use stop to stop threads and disconnect websocket before destroying the client
@@ -33,8 +33,6 @@ class WebsocketClient:
     * on_packet
     * on_error
 
-    After start() is called, the ping thread will ping server every 60 seconds.
-
     If you want to send anything other than JSON, override send_packet.
     """
 
@@ -46,8 +44,7 @@ class WebsocketClient:
         self.ws_lock: Lock = Lock()
         self.ws: websocket.WebSocket = None
 
-        self.worker_thread: Thread = None
-        self.ping_thread: Thread = None
+        self.thread: Thread = None
 
         self.proxy_host: Optional[str] = None
         self.proxy_port: Optional[int] = None
@@ -93,11 +90,8 @@ class WebsocketClient:
         Please don't send packet untill on_connected fucntion is called.
         """
         self.active = True
-        self.worker_thread = Thread(target=self.run)
-        self.worker_thread.start()
-
-        self.ping_thread = Thread(target=self.run_ping)
-        self.ping_thread.start()
+        self.thread = Thread(target=self.run)
+        self.thread.start()
 
     def stop(self) -> None:
         """
@@ -112,8 +106,7 @@ class WebsocketClient:
 
         This function cannot be called from worker thread or callback function.
         """
-        self.ping_thread.join()
-        self.worker_thread.join()
+        self.thread.join()
 
     def send_packet(self, packet: dict) -> None:
         """
@@ -214,29 +207,6 @@ class WebsocketClient:
             et, ev, tb = sys.exc_info()
             self.on_error(et, ev, tb)
         self.disconnect()
-
-    def run_ping(self) -> None:
-        """"""
-        while self.active:
-            try:
-                self.ping()
-            except:  # noqa
-                et, ev, tb = sys.exc_info()
-                self.on_error(et, ev, tb)
-
-                # self.run() will reconnect websocket
-                sleep(1)
-
-            for i in range(self.ping_interval):
-                if not self.active:
-                    break
-                sleep(1)
-
-    def ping(self) -> None:
-        """"""
-        ws = self.ws
-        if ws:
-            ws.send("ping", websocket.ABNF.OPCODE_PING)
 
     def on_connected(self) -> None:
         """
