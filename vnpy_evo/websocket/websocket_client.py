@@ -8,10 +8,13 @@ from datetime import datetime
 from threading import Lock, Thread
 from time import sleep
 from typing import Optional
+from types import TracebackType
 
 import websocket
 
 from vnpy.trader.utility import get_file_logger
+
+import websocket.websocket_client
 
 
 class WebsocketClient:
@@ -38,29 +41,29 @@ class WebsocketClient:
     If you want to send anything other than JSON, override send_packet.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Constructor"""
-        self.host = None
+        self.host: str = ""
 
-        self._ws_lock = Lock()
-        self._ws = None
+        self._ws_lock: Lock = Lock()
+        self._ws: websocket.WebSocket = None
 
-        self._worker_thread = None
-        self._ping_thread = None
-        self._active = False
+        self._worker_thread: Thread = None
+        self._ping_thread: Thread = None
+        self._active: bool = False
 
-        self.proxy_host = None
-        self.proxy_port = None
-        self.ping_interval = 60  # seconds
-        self.header = {}
+        self.proxy_host: str = ""
+        self.proxy_port: int = 0
+        self.ping_interval: int = 60  # seconds
+        self.header: dict = {}
 
         self._receive_timeout: int = 0
 
         self.logger: Optional[logging.Logger] = None
 
         # For debugging
-        self._last_sent_text = None
-        self._last_received_text = None
+        self._last_sent_text: str = None
+        self._last_received_text: str = None
 
     def init(
         self,
@@ -71,7 +74,7 @@ class WebsocketClient:
         header: dict = None,
         log_path: Optional[str] = None,
         receive_timeout: int = 60
-    ):
+    ) -> None:
         """
         :param host:
         :param proxy_host:
@@ -95,7 +98,7 @@ class WebsocketClient:
 
         self._receive_timeout = receive_timeout
 
-    def start(self):
+    def start(self) -> None:
         """
         Start the client and on_connected function is called after webscoket
         is connected succesfully.
@@ -110,14 +113,14 @@ class WebsocketClient:
         self._ping_thread = Thread(target=self._run_ping)
         self._ping_thread.start()
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stop the client.
         """
         self._active = False
         self._disconnect()
 
-    def join(self):
+    def join(self) -> None:
         """
         Wait till all threads finish.
 
@@ -126,46 +129,45 @@ class WebsocketClient:
         self._ping_thread.join()
         self._worker_thread.join()
 
-    def send_packet(self, packet: dict):
+    def send_packet(self, packet: dict) -> None:
         """
         Send a packet (dict data) to server
 
         override this if you want to send non-json packet
         """
-        text = json.dumps(packet)
+        text: str = json.dumps(packet)
         self._record_last_sent_text(text)
         return self._send_text(text)
 
-    def _log(self, msg, *args):
-        logger = self.logger
-        if logger:
-            logger.debug(msg, *args)
+    def _log(self, msg, *args) -> None:
+        """"""
+        if self.logger:
+            self.logger.debug(msg, *args)
 
-    def _send_text(self, text: str):
+    def _send_text(self, text: str) -> None:
         """
         Send a text string to server.
         """
-        ws = self._ws
-        if ws:
-            ws.send(text, opcode=websocket.ABNF.OPCODE_TEXT)
+        if self._ws:
+            self._ws.send(text, opcode=websocket.ABNF.OPCODE_TEXT)
             self._log('sent text: %s', text)
 
-    def _send_binary(self, data: bytes):
+    def _send_binary(self, data: bytes) -> None:
         """
         Send bytes data to server.
         """
-        ws = self._ws
-        if ws:
-            ws._send_binary(data)
+        if self._ws:
+            self._ws._send_binary(data)
             self._log('sent binary: %s', data)
 
-    def _create_connection(self, *args, **kwargs):
+    def _create_connection(self, *args, **kwargs) -> websocket.WebSocket:
         """"""
         return websocket.create_connection(timeout=self._receive_timeout, *args, **kwargs)
 
-    def _ensure_connection(self):
+    def _ensure_connection(self) -> None:
         """"""
-        triggered = False
+        triggered: bool = False
+
         with self._ws_lock:
             if self._ws is None:
                 self._ws = self._create_connection(
@@ -176,24 +178,26 @@ class WebsocketClient:
                     header=self.header
                 )
                 triggered = True
+
         if triggered:
             self.on_connected()
 
-    def _disconnect(self):
-        """
-        """
-        triggered = False
+    def _disconnect(self) -> None:
+        """"""
+        triggered: bool = False
+
         with self._ws_lock:
             if self._ws:
                 ws: websocket.WebSocket = self._ws
                 self._ws = None
 
                 triggered = True
+
         if triggered:
             ws.close()
             self.on_disconnected()
 
-    def _run(self):
+    def _run(self) -> None:
         """
         Keep running till stop is called.
         """
@@ -201,9 +205,9 @@ class WebsocketClient:
             while self._active:
                 try:
                     self._ensure_connection()
-                    ws = self._ws
+                    ws: websocket.WebSocket = self._ws
                     if ws:
-                        text = ws.recv()
+                        text: str = ws.recv()
 
                         # ws object is closed when recv function is blocking
                         if not text:
@@ -213,7 +217,7 @@ class WebsocketClient:
                         self._record_last_received_text(text)
 
                         try:
-                            data = self.unpack_data(text)
+                            data: dict = self.unpack_data(text)
                         except ValueError as e:
                             print("websocket unable to parse data: " + text)
                             raise e
@@ -239,8 +243,7 @@ class WebsocketClient:
             self.on_error(et, ev, tb)
         self._disconnect()
 
-    @staticmethod
-    def unpack_data(data: str):
+    def unpack_data(self, data: str) -> dict:
         """
         Default serialization format is json.
 
@@ -248,7 +251,7 @@ class WebsocketClient:
         """
         return json.loads(data)
 
-    def _run_ping(self):
+    def _run_ping(self) -> None:
         """"""
         while self._active:
             try:
@@ -265,49 +268,42 @@ class WebsocketClient:
                     break
                 sleep(1)
 
-    def _ping(self):
+    def _ping(self) -> None:
         """"""
         ws = self._ws
         if ws:
             ws.send("ping", websocket.ABNF.OPCODE_PING)
 
-    @staticmethod
-    def on_connected():
+    def on_connected(self) -> None:
         """
         Callback when websocket is connected successfully.
         """
         pass
 
-    @staticmethod
-    def on_disconnected():
+    def on_disconnected(self) -> None:
         """
         Callback when websocket connection is lost.
         """
         pass
 
-    @staticmethod
-    def on_packet(packet: dict):
+    def on_packet(packet: dict) -> None:
         """
         Callback when receiving data from server.
         """
         pass
 
-    def on_error(self, exception_type: type, exception_value: Exception, tb):
+    def on_error(self, exception_type: type, exception_value: Exception, tb) -> None:
         """
         Callback when exception raised.
         """
-        sys.stderr.write(
-            self.exception_detail(exception_type, exception_value, tb)
-        )
+        sys.stderr.write(self.exception_detail(exception_type, exception_value, tb))
         return sys.excepthook(exception_type, exception_value, tb)
 
-    def exception_detail(
-        self, exception_type: type, exception_value: Exception, tb
-    ):
+    def exception_detail(self, exception_type: type, exception_value: Exception, tb: TracebackType) -> str:
         """
         Print detailed exception information.
         """
-        text = "[{}]: Unhandled WebSocket Error:{}\n".format(
+        text: str = "[{}]: Unhandled WebSocket Error:{}\n".format(
             datetime.now().isoformat(), exception_type
         )
         text += "LastSentText:\n{}\n".format(self._last_sent_text)
@@ -318,13 +314,13 @@ class WebsocketClient:
         )
         return text
 
-    def _record_last_sent_text(self, text: str):
+    def _record_last_sent_text(self, text: str) -> None:
         """
         Record last sent text for debug purpose.
         """
         self._last_sent_text = text[:1000]
 
-    def _record_last_received_text(self, text: str):
+    def _record_last_received_text(self, text: str) -> None:
         """
         Record last received text for debug purpose.
         """
