@@ -12,8 +12,6 @@ from types import TracebackType
 
 import websocket
 
-from vnpy.trader.utility import get_file_logger
-
 import websocket.websocket_client
 
 
@@ -59,8 +57,6 @@ class WebsocketClient:
 
         self._receive_timeout: int = 0
 
-        self.logger: Optional[logging.Logger] = None
-
         # For debugging
         self._last_sent_text: str = None
         self._last_received_text: str = None
@@ -85,9 +81,6 @@ class WebsocketClient:
         """
         self.host = host
         self.ping_interval = ping_interval  # seconds
-        if log_path is not None:
-            self.logger = get_file_logger(log_path)
-            self.logger.setLevel(logging.DEBUG)
 
         if header:
             self.header = header
@@ -137,28 +130,7 @@ class WebsocketClient:
         """
         text: str = json.dumps(packet)
         self._record_last_sent_text(text)
-        return self._send_text(text)
-
-    def _log(self, msg, *args) -> None:
-        """"""
-        if self.logger:
-            self.logger.debug(msg, *args)
-
-    def _send_text(self, text: str) -> None:
-        """
-        Send a text string to server.
-        """
-        if self._ws:
-            self._ws.send(text, opcode=websocket.ABNF.OPCODE_TEXT)
-            self._log('sent text: %s', text)
-
-    def _send_binary(self, data: bytes) -> None:
-        """
-        Send bytes data to server.
-        """
-        if self._ws:
-            self._ws._send_binary(data)
-            self._log('sent binary: %s', data)
+        self._ws.send(text, opcode=websocket.ABNF.OPCODE_TEXT)
 
     def _create_connection(self, *args, **kwargs) -> websocket.WebSocket:
         """"""
@@ -222,7 +194,6 @@ class WebsocketClient:
                             print("websocket unable to parse data: " + text)
                             raise e
 
-                        self._log('recv data: %s', data)
                         self.on_packet(data)
                 # ws is closed before recv function is called
                 # For socket.error, see Issue #1608
