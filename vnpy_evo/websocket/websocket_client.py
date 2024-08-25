@@ -40,6 +40,7 @@ class WebsocketClient:
 
     def __init__(self) -> None:
         """Constructor"""
+        self.active: bool = False
         self.host: str = ""
 
         self.ws_lock: Lock = Lock()
@@ -47,28 +48,24 @@ class WebsocketClient:
 
         self.worker_thread: Thread = None
         self.ping_thread: Thread = None
-        self.active: bool = False
 
-        self.proxy_host: str = ""
-        self.proxy_port: int = 0
-        self.ping_interval: int = 60  # seconds
-        self.header: dict = {}
-
+        self.proxy_host: Optional[str] = None
+        self.proxy_port: Optional[int] = None
+        self.header: Optional[dict] = None
+        self.ping_interval: int = 0
         self.receive_timeout: int = 0
 
-        # For debugging
-        self.last_sent_text: str = None
-        self.last_received_text: str = None
+        self.last_sent_text: str = ""
+        self.last_received_text: str = ""
 
     def init(
         self,
         host: str,
         proxy_host: str = "",
         proxy_port: int = 0,
-        ping_interval: int = 60,
+        ping_interval: int = 10,
+        receive_timeout: int = 60,
         header: dict = None,
-        log_path: Optional[str] = None,
-        receive_timeout: int = 60
     ) -> None:
         """
         :param host:
@@ -76,10 +73,10 @@ class WebsocketClient:
         :param proxy_port:
         :param header:
         :param ping_interval: unit: seconds, type: int
-        :param log_path: optional. file to save log.
         """
         self.host = host
         self.ping_interval = ping_interval  # seconds
+        self.receive_timeout = receive_timeout
 
         if header:
             self.header = header
@@ -88,8 +85,6 @@ class WebsocketClient:
             self.proxy_host = proxy_host
             self.proxy_port = proxy_port
 
-        self.receive_timeout = receive_timeout
-
     def start(self) -> None:
         """
         Start the client and on_connected function is called after webscoket
@@ -97,7 +92,6 @@ class WebsocketClient:
 
         Please don't send packet untill on_connected fucntion is called.
         """
-
         self.active = True
         self.worker_thread = Thread(target=self.run)
         self.worker_thread.start()
