@@ -96,10 +96,10 @@ class RestClient(object):
     def __init__(self):
         """"""
         self.url_base: str = ""
-        self._active: bool = False
+        self.active: bool = False
 
-        self._queue: Queue = Queue()
-        self._pool: Pool = None
+        self.queue: Queue = Queue()
+        self.pool: Pool = None
 
         self.proxies: dict = None
 
@@ -111,7 +111,6 @@ class RestClient(object):
     ) -> None:
         """
         Init rest client with url_base which is the API root address.
-        e.g. "https://www.bitmex.com/api/v1/"
         """
         self.url_base = url_base
 
@@ -119,28 +118,28 @@ class RestClient(object):
             proxy = f"http://{proxy_host}:{proxy_port}"
             self.proxies = {"http": proxy, "https": proxy}
 
-    def start(self, n: int = 3) -> None:
+    def start(self, session_count: int = 5) -> None:
         """
-        Start rest client with session count n.
+        Start rest client with session_count number of threads.
         """
-        if self._active:
+        if self.active:
             return
 
-        self._active = True
-        self._pool = Pool(n)
-        self._pool.apply_async(self._run)
+        self.active = True
+        self.pool = Pool(session_count)
+        self.pool.apply_async(self.run)
 
     def stop(self) -> None:
         """
         Stop rest client immediately.
         """
-        self._active = False
+        self.active = False
 
     def join(self) -> None:
         """
         Wait till all requests are processed.
         """
-        self._queue.join()
+        self.queue.join()
 
     def add_request(
         self,
@@ -178,31 +177,30 @@ class RestClient(object):
             on_error,
             extra,
         )
-        self._queue.put(request)
+        self.queue.put(request)
         return request
 
-    def _run(self) -> None:
+    def run(self) -> None:
         """"""
         try:
             session = requests.session()
-            while self._active:
+            while self.active:
                 try:
-                    request = self._queue.get(timeout=1)
+                    request = self.queue.get(timeout=1)
                     try:
-                        self._process_request(request, session)
+                        self.process_request(request, session)
                     finally:
-                        self._queue.task_done()
+                        self.queue.task_done()
                 except Empty:
                     pass
         except Exception:
             et, ev, tb = sys.exc_info()
             self.on_error(et, ev, tb, None)
 
-    def sign(self, request: Request) -> None:
+    def sign(self, request: Request) -> RequestStatus:
         """
         This function is called before sending object request out.
         Please implement signature method here.
-        @:return (request)
         """
         return request
 
@@ -210,7 +208,8 @@ class RestClient(object):
         """
         Default on_failed handler for Non-2xx response.
         """
-        sys.stderr.write(str(request))
+        print("RestClient on failed" + "-" * 10)
+        print(str(request))
 
     def on_error(
         self,
@@ -222,10 +221,11 @@ class RestClient(object):
         """
         Default on_error handler for Python exception.
         """
-        sys.stderr.write(
-            self.exception_detail(exception_type, exception_value, tb, request)
-        )
-        sys.excepthook(exception_type, exception_value, tb)
+        try:
+            print("RestClient on error" + "-" * 10)
+            print(self.exception_detail(exception_type, exception_value, tb, request))
+        except Exception:
+            traceback.print_exc()
 
     def exception_detail(
         self,
@@ -244,9 +244,7 @@ class RestClient(object):
         )
         return text
 
-    def _process_request(
-        self, request: Request, session: requests.Session
-    ) -> None:
+    def process_request(self, request: Request, session: requests.Session) -> None:
         """
         Sending request to server and get result.
         """
