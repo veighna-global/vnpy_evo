@@ -42,7 +42,7 @@ class Request(object):
         on_failed: ON_FAILED_TYPE = None,
         on_error: ON_ERROR_TYPE = None,
         extra: object = None,
-    ):
+    ) -> None:
         """"""
         self.method: str = method
         self.path: str = path
@@ -58,7 +58,7 @@ class Request(object):
         self.response: requests.Response = None
         self.status: RequestStatus = RequestStatus.ready
 
-    def __str__(self):
+    def __str__(self) -> str:
         """"""
         if self.response is None:
             status_code = "terminated"
@@ -93,7 +93,7 @@ class RestClient(object):
     * Reimplement on_error function to handle exception msg.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """"""
         self.url_base: str = ""
         self.active: bool = False
@@ -115,7 +115,7 @@ class RestClient(object):
         self.url_base = url_base
 
         if proxy_host and proxy_port:
-            proxy = f"http://{proxy_host}:{proxy_port}"
+            proxy: str = f"http://{proxy_host}:{proxy_port}"
             self.proxies = {"http": proxy, "https": proxy}
 
     def start(self, session_count: int = 5) -> None:
@@ -166,7 +166,7 @@ class RestClient(object):
         :param extra: object extra data which can be used when handling callback
         :return: Request
         """
-        request = Request(
+        request: Request = Request(
             method,
             path,
             params,
@@ -183,10 +183,10 @@ class RestClient(object):
     def run(self) -> None:
         """"""
         try:
-            session = requests.session()
+            session: requests.Session = requests.session()
             while self.active:
                 try:
-                    request = self.queue.get(timeout=1)
+                    request: Request = self.queue.get(timeout=1)
                     try:
                         self.process_request(request, session)
                     finally:
@@ -215,7 +215,7 @@ class RestClient(object):
         self,
         exception_type: type,
         exception_value: Exception,
-        tb,
+        tb: TracebackType,
         request: Optional[Request],
     ) -> None:
         """
@@ -231,10 +231,10 @@ class RestClient(object):
         self,
         exception_type: type,
         exception_value: Exception,
-        tb,
+        tb: TracebackType,
         request: Optional[Request],
-    ) -> None:
-        text = "[{}]: Unhandled RestClient Error:{}\n".format(
+    ) -> str:
+        text: str = "[{}]: Unhandled RestClient Error:{}\n".format(
             datetime.now().isoformat(), exception_type
         )
         text += "request:{}\n".format(request)
@@ -251,9 +251,9 @@ class RestClient(object):
         try:
             request = self.sign(request)
 
-            url = self.make_full_url(request.path)
+            url: str = self.make_full_url(request.path)
 
-            response = session.request(
+            response: requests.Response = session.request(
                 request.method,
                 url,
                 headers=request.headers,
@@ -262,11 +262,11 @@ class RestClient(object):
                 proxies=self.proxies,
             )
             request.response = response
-            status_code = response.status_code
+
+            status_code: int = response.status_code
             if status_code // 100 == 2:  # 2xx codes are all successful
-                if status_code == 204:
-                    json_body = None
-                else:
+                json_body: dict = None
+                if status_code != 204:
                     json_body = response.json()
 
                 request.callback(json_body, request)
@@ -311,7 +311,7 @@ class RestClient(object):
         :param headers: dict for headers
         :return: requests.Response
         """
-        request = Request(
+        request: Request = Request(
             method,
             path,
             params,
@@ -320,9 +320,9 @@ class RestClient(object):
         )
         request = self.sign(request)
 
-        url = self.make_full_url(request.path)
+        url: str = self.make_full_url(request.path)
 
-        response = requests.request(
+        response: requests.Response = requests.request(
             request.method,
             url,
             headers=request.headers,
