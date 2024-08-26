@@ -90,6 +90,9 @@ class WebsocketClient:
         """
         Stop the client.
         """
+        if not self.active:
+            return
+
         self.active = False
         self.wsapp.close()
 
@@ -114,20 +117,37 @@ class WebsocketClient:
         """
         Keep running till stop is called.
         """
+        def on_open(wsapp: websocket.WebSocketApp) -> None:
+            self.on_connected()
+
+        def on_close(wsapp: websocket.WebSocketApp, status_code: int, msg: str) -> None:
+            self.on_disconnected(status_code, msg)
+
+        def on_error(wsapp: websocket.WebSocketApp, e: Exception) -> None:
+            self.on_error(e)
+
+        def on_message(wsapp: websocket.WebSocketApp, message: str) -> None:
+            self.on_message(message)
+
         self.wsapp = websocket.WebSocketApp(
             url=self.host,
             header=self.header,
-            on_open=self.on_connected,
-            on_close=self.on_disconnected,
-            on_error=self.on_error,
-            on_message=self.on_message
+            on_open=on_open,
+            on_close=on_close,
+            on_error=on_error,
+            on_message=on_message
         )
+
+        proxy_type: Optional[str] = None
+        if self.proxy_host:
+            proxy_type = "http"
 
         self.wsapp.run_forever(
             sslopt={"cert_reqs": ssl.CERT_NONE},
             ping_interval=self.ping_interval,
             http_proxy_host=self.proxy_host,
-            http_proxy_port=self.proxy_port
+            http_proxy_port=self.proxy_port,
+            proxy_type=proxy_type
         )
 
     def on_message(self, message: str) -> None:
