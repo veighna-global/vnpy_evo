@@ -86,6 +86,7 @@ class ExceptionWidget(QtWidgets.QWidget):
         """"""
         self.setFixedSize(600, 600)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setStyleSheet("background-color: rgb(243, 243, 243)")
 
         self.title_label = SubtitleLabel("Exception Triggered", self)
 
