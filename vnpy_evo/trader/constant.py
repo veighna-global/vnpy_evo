@@ -20,7 +20,11 @@ class Exchange(Enum):
     BINANCE = "BINANCE"
     OKX = "OKX"
     BYBIT = "BYBIT"
+    BTSE = "BTSE"
     DERIBIT = "DERIBIT"
+
+    # Global
+    OTC = "OTC"
 
     # Special Function
     LOCAL = "LOCAL"         # For local generated data

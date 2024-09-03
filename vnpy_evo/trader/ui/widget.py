@@ -188,10 +188,10 @@ class TradingWidget(QtWidgets.QWidget):
         self.price_check: CheckBox = CheckBox()
         self.price_check.setToolTip(_("设置价格随行情更新"))
 
-        send_button: PushButton = PushButton(_("委托"))
+        send_button: PushButton = PushButton("Send Order")
         send_button.clicked.connect(self.send_order)
 
-        cancel_button: PushButton = PushButton(_("全撤"))
+        cancel_button: PushButton = PushButton("Cancel All")
         cancel_button.clicked.connect(self.cancel_all)
 
         grid: QtWidgets.QGridLayout = QtWidgets.QGridLayout()

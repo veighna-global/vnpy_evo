@@ -59,15 +59,14 @@ def create_qapp(app_name: str = "VeighNa Evo") -> QtWidgets.QApplication:
 
     sys.excepthook = excepthook
 
-    if sys.version_info >= (3, 8):
-        def threading_excepthook(args: threading.ExceptHookArgs) -> None:
-            """Show exception detail from background threads with QMessageBox."""
-            sys.__excepthook__(args.exc_type, args.exc_value, args.exc_traceback)
+    def threading_excepthook(args: threading.ExceptHookArgs) -> None:
+        """Show exception detail from background threads with QMessageBox."""
+        sys.__excepthook__(args.exc_type, args.exc_value, args.exc_traceback)
 
-            msg: str = "".join(traceback.format_exception(args.exc_type, args.exc_value, args.exc_traceback))
-            exception_widget.signal.emit(msg)
+        msg: str = "".join(traceback.format_exception(args.exc_type, args.exc_value, args.exc_traceback))
+        exception_widget.signal.emit(msg)
 
-        threading.excepthook = threading_excepthook
+    threading.excepthook = threading_excepthook
 
     return qapp
 
@@ -87,6 +86,7 @@ class ExceptionWidget(QtWidgets.QWidget):
         """"""
         self.setFixedSize(600, 600)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setStyleSheet("background-color: rgb(243, 243, 243)")
 
         self.title_label = SubtitleLabel("Exception Triggered", self)
 

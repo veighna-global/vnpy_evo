@@ -244,7 +244,7 @@ class BaseMonitor(TableWidget):
         self.setHorizontalHeaderLabels(labels)
 
         self.verticalHeader().setVisible(False)
-        self.setEditTriggers(self.NoEditTriggers)
+        self.setEditTriggers(self.EditTrigger.NoEditTriggers)
         self.setAlternatingRowColors(True)
         self.setSortingEnabled(self.sorting)
 
@@ -638,14 +638,14 @@ class ContractManager(QtWidgets.QWidget):
 
         labels: list = []
         for name, display in self.headers.items():
-            label: str = f"{display}\n{name}"
+            label: str = f"{display}"
             labels.append(label)
 
         self.contract_table: TableWidget = TableWidget()
         self.contract_table.setColumnCount(len(self.headers))
         self.contract_table.setHorizontalHeaderLabels(labels)
         self.contract_table.verticalHeader().setVisible(False)
-        self.contract_table.setEditTriggers(self.contract_table.NoEditTriggers)
+        self.contract_table.setEditTriggers(self.contract_table.EditTrigger.NoEditTriggers)
         self.contract_table.setAlternatingRowColors(True)
 
         hbox: QtWidgets.QHBoxLayout = QtWidgets.QHBoxLayout()

@@ -13,7 +13,6 @@ from qfluentwidgets import (
 )
 
 from vnpy.event import EventEngine
-from vnpy.trader.locale import _
 
 import vnpy_evo
 from .qt import QtCore, QtGui, QtWidgets
@@ -34,7 +33,8 @@ from .monitor import (
     ActiveOrderMonitor,
     ContractManager
 )
-from ..engine import MainEngine, BaseApp
+from ..app import BaseApp
+from ..engine import MainEngine
 from ..utility import get_icon_path, TRADER_DIR
 
 
@@ -191,19 +191,19 @@ class HomeWidget(QtWidgets.QWidget):
 
         self.menu: RoundMenu = RoundMenu(parent=self)
 
-        self.menu_button: PushButton = PushButton("System")
+        self.menu_button: PushButton = PushButton("Connect Gateway")
         self.menu_button.clicked.connect(self.show_menu)
 
         # Set layout
         mid_pivot = PivotWidgdet(self)
-        mid_pivot.add_widget(self.active_monitor, "Active")
-        mid_pivot.add_widget(self.order_monitor, "Order")
+        mid_pivot.add_widget(self.active_monitor, "Open Orders")
+        mid_pivot.add_widget(self.order_monitor, "Order History")
 
         bottom_pivot = PivotWidgdet(self)
         bottom_pivot.add_widget(self.log_monitor, "Log")
-        bottom_pivot.add_widget(self.trade_monitor, "Trade")
-        bottom_pivot.add_widget(self.position_monitor, "Position")
-        bottom_pivot.add_widget(self.account_monitor, "Account")
+        bottom_pivot.add_widget(self.trade_monitor, "Trade History")
+        bottom_pivot.add_widget(self.position_monitor, "Positions")
+        bottom_pivot.add_widget(self.account_monitor, "Assets")
 
         vbox1 = QtWidgets.QVBoxLayout()
         vbox1.addWidget(self.tick_monitor)
