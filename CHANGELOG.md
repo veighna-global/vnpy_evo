@@ -1,3 +1,15 @@
+# 0.3.1
+
+1. add new vnpy_evo.rest as alternative of vnpy_rest
+2. add new vnpy_evo.websocket as alternative of vnpy_websocket
+
+# 0.3.0
+
+1. New vnpy_btse gateway module
+2. New vnpy_novastrategy module for crypto market quant strategies
+3. New vnpy_duckdb database module
+4. Quick install script for Windows/Linux/Mac OS
+
 # 0.2.2
 
 1. reimplement extract_vt_symbol function

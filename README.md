@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-    <img src ="https://img.shields.io/badge/version-0.3.0-blueviolet.svg"/>
+    <img src ="https://img.shields.io/badge/version-0.3.1-blueviolet.svg"/>
     <img src ="https://img.shields.io/badge/platform-windows|linux|macos-yellow.svg"/>
     <img src ="https://img.shields.io/badge/python-3.10|3.11|3.12-blue.svg"/>
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_evo.svg?color=orange"/>
@@ -67,7 +67,7 @@ Please ensure you have installed [XCode](https://developer.apple.com/xcode/) and
 **Ubuntu**
 
 ```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/veighna-global/vnpy_evo/HEAD/install_linux.sh)"
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/veighna-global/vnpy_evo/HEAD/install_linux.sh)"
 ```
 
 ## Example
