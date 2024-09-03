@@ -11,7 +11,7 @@
     <img src ="https://img.shields.io/github/license/veighna-global/vnpy_evo.svg?color=orange"/>
 </p>
 
-VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market. 
+VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://github.com/vnpy/vnpy) quant trading platform on the crypto market.
 
 ## Social
 
@@ -22,9 +22,9 @@ VeighNa Evo (vnpy_evo) is the core module for using [VeighNa (vnpy)](https://git
 
 ## Features
 
-1. Full-featured quantitative trading platform (vnpy_evo.trader) 
+1. Full-featured quantitative trading platform (vnpy_evo.trader)
 
-2. Gateways which connect to exchanges for receiving market data and sending trading orders: 
+2. Gateways which connect to exchanges for receiving market data and sending trading orders:
 
     * Crypto Market
 
@@ -87,7 +87,7 @@ def main():
 
     event_engine = EventEngine()
     main_engine = MainEngine(event_engine)
-    
+
     main_engine.add_gateway(BinanceUsdtGateway)
     main_engine.add_app(CtaStrategyApp)
     main_engine.add_app(NovaStrategyApp)
@@ -97,7 +97,7 @@ def main():
 
     qapp.exec()
 
-if __name__ == "__main__"。
+if __name__ == "__main__":
     main()
 ```
 
