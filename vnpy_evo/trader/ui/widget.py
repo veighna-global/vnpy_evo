@@ -178,9 +178,14 @@ class TradingWidget(QtWidgets.QWidget):
 
         self.price_line: LineEdit = LineEdit()
         self.price_line.setValidator(double_validator)
+        self.price_line.textChanged.connect(self.update_value)
 
         self.volume_line: LineEdit = LineEdit()
         self.volume_line.setValidator(double_validator)
+        self.volume_line.textChanged.connect(self.update_value)
+
+        self.value_line: LineEdit = LineEdit()
+        self.value_line.setReadOnly(True)
 
         self.gateway_combo: ComboBox = ComboBox()
         self.gateway_combo.addItems(self.main_engine.get_all_gateway_names())
@@ -203,7 +208,8 @@ class TradingWidget(QtWidgets.QWidget):
         grid.addWidget(BodyLabel(_("类型")), 5, 0)
         grid.addWidget(BodyLabel(_("价格")), 6, 0)
         grid.addWidget(BodyLabel(_("数量")), 7, 0)
-        grid.addWidget(BodyLabel(_("接口")), 8, 0)
+        grid.addWidget(BodyLabel("Value"), 8, 0)
+        grid.addWidget(BodyLabel(_("接口")), 9, 0)
         grid.addWidget(self.exchange_combo, 0, 1, 1, 2)
         grid.addWidget(self.symbol_line, 1, 1, 1, 2)
         grid.addWidget(self.name_line, 2, 1, 1, 2)
@@ -213,9 +219,10 @@ class TradingWidget(QtWidgets.QWidget):
         grid.addWidget(self.price_line, 6, 1, 1, 1)
         grid.addWidget(self.price_check, 6, 2, 1, 1)
         grid.addWidget(self.volume_line, 7, 1, 1, 2)
-        grid.addWidget(self.gateway_combo, 8, 1, 1, 2)
-        grid.addWidget(send_button, 9, 0, 1, 3)
-        grid.addWidget(cancel_button, 10, 0, 1, 3)
+        grid.addWidget(self.value_line, 8, 1, 1, 2)
+        grid.addWidget(self.gateway_combo, 9, 1, 1, 2)
+        grid.addWidget(send_button, 10, 0, 1, 3)
+        grid.addWidget(cancel_button, 11, 0, 1, 3)
 
         # Market depth display area
         bid_color: str = "red"
@@ -486,6 +493,19 @@ class TradingWidget(QtWidgets.QWidget):
                 self.offset_combo.findText(Offset.CLOSE.value)
             )
             self.volume_line.setText(str(abs(data.volume)))
+
+    def update_value(self) -> None:
+        """Update order value"""
+        contract: ContractData = self.main_engine.get_contract(self.vt_symbol)
+        price_text: str = self.price_line.text()
+        volume_text: str = self.volume_line.text()
+
+        if not all([contract, price_text, volume_text]):
+            self.value_line.setText("")
+            return
+
+        value: float = float(price_text) * float(volume_text) * contract.size
+        self.value_line.setText(f"{value:.2f}")
 
 
 class AboutDialog(MessageBoxBase):
