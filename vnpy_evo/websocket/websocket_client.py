@@ -147,7 +147,8 @@ class WebsocketClient:
             ping_interval=self.ping_interval,
             http_proxy_host=self.proxy_host,
             http_proxy_port=self.proxy_port,
-            proxy_type=proxy_type
+            proxy_type=proxy_type,
+            reconnect=1
         )
 
     def on_message(self, message: str) -> None:
