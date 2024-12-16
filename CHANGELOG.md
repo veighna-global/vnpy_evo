@@ -1,3 +1,7 @@
+# 0.3.2
+
+1. enable auto reconnect of WebsocketClient
+
 # 0.3.1
 
 1. add new vnpy_evo.rest as alternative of vnpy_rest
