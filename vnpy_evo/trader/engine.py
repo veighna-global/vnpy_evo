@@ -49,15 +49,15 @@ class LogEngine(BaseEngine):
             logger.remove()     # Remove default stderr output
 
         if SETTINGS["log.file"]:
-            today_date: str = datetime.now().strftime("%Y%m%d")
-            filename: str = f"vt_{today_date}.log"
             log_path: Path = get_folder_path("log")
-            file_path: Path = log_path.joinpath(filename)
+            filename_pattern: str = log_path.joinpath("vt_{time:YYYYMMDD}.log")  # Use {time} in filename
 
             logger.add(
-                sink=file_path,
+                sink=filename_pattern,
                 level=self.level,
-                retention="4 weeks"
+                format=self.format,
+                rotation="00:00",       # Rotate log file at midnight
+                retention="4 weeks"     # Keep logs for 4 weeks
             )
 
         self.register_event()
